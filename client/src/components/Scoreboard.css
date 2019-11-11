@@ -1,0 +1,8 @@
+.board {
+    position: relative;
+    margin: auto;
+}
+
+.board h5 {
+    text-transform: uppercase;
+}

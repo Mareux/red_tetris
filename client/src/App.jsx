@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import FieldContainer from "./containers/FieldContainer";
+import GameContainer from "./containers/GameContainer";
 
 const App = () => {
   return (
       <>
-        <FieldContainer />
+        <GameContainer />
       </>
   );
 };
