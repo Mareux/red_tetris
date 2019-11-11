@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
-import { subscribeToTimer } from './api';
+import {subscribeToTetris, subscribeToTimer} from './api';
 
 const Client = () => {
 
     const [timestamp, setTimestamp] = useState();
 
-    subscribeToTimer((err, timestamp) => setTimestamp(timestamp));
+    subscribeToTetris((err, timestamp) => setTimestamp(timestamp));
 
     return (
         <div>
             <p>
-                This is timer value: {new Date().toISOString(timestamp)}
+                {timestamp}
             </p>
         </div>
     );

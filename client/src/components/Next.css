@@ -4,12 +4,11 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     margin: 10px;
     border-radius: 5px;
-    height: 130px;
 }
 
 .next_figure {
-    width: 120px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     background-color: rgba(244, 240, 238, 0.98);
     border: 2px solid black;
     border-radius: 3px;
