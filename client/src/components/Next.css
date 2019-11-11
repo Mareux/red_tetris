@@ -1,26 +1,25 @@
-.board {
-    width: auto;
-    height: 140px;
+.next {
     background-color: darkgray;
-    margin: 10px;
     padding: 8px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    margin: 10px;
     border-radius: 5px;
+    height: 130px;
 }
 
-.board p {
+.next_figure {
+    width: 120px;
+    height: 100px;
+    background-color: rgba(244, 240, 238, 0.98);
+    border: 2px solid black;
+    border-radius: 3px;
+}
+
+.next p {
     text-transform: uppercase;
     margin: 0;
     padding-bottom: 1px;
     padding-top: 3px;
     font-weight: bold;
     text-align: center
-}
-
-.board div {
-    border: 2px solid black;
-    border-radius: 3px;
-    background-color: rgba(244, 240, 238, 0.98);
-    width: 120px;
-    height: 20px;
 }

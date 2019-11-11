@@ -3,18 +3,18 @@ import './Scoreboard.css'
 
 function Scoreboard() {
 
-    const [score, setScore] = useState(0);
-    const [level, setLevel] = useState(1);
-    const [lines, setLines] = useState(0);
+    const [score, setScore] = useState("");
+    const [level, setLevel] = useState("");
+    const [lines, setLines] = useState("");
 
     return (
     <div className="board">
-        <h5>Score</h5>
-        <p>{score}</p>
-        <h5>Level</h5>
-        <p>{level}</p>
-        <h5>Lines</h5>
-        <p>{lines}</p>
+        <p>Score</p>
+        <div>{score}</div>
+        <p>Level</p>
+        <div>{level}</div>
+        <p>Lines</p>
+        <div>{lines}</div>
     </div>)
 }
 
