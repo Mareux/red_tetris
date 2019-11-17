@@ -1,13 +1,12 @@
 const io = require('socket.io')();
 
-
 let default_color = [50, 50, 50];
 
 let color = default_color;
 
 let line = [color, color, color, color, color, color, color, color, color, color];
 
-const playfield = [[...line],
+let playfield = [[...line],
     [...line],
     [...line],
     [...line],
@@ -17,20 +16,20 @@ const playfield = [[...line],
 
 let yellow = [200, 255, 0];
 
-playfield[0][0] = yellow;
-
-let test = {
+let t_square = {
     name: "test",
-    shape: [1],
+    shape: [[0, 1, 0],
+            [1, 1, 1],
+            [0, 0, 0]],
     color: yellow,
     position: [0, 0]
 }
 
-var current_tetromino = test;
+var current_tetromino = t_square;
 
 io.on('connection', (client) => {
     client.on('subscribeToTetris', (interval) => {
-        console.log('client is subscribing to tetris with interval ', interval);
+        // console.log('client is subscribing to tetris with interval ', interval);
         setInterval(() => {
              client.emit('playfield', playfield);
          }, interval);
@@ -46,29 +45,48 @@ function erase_current_tetromino()
 {
     if (!playfield[current_tetromino.position[0]])
         return ;
-    if (playfield[current_tetromino.position[0]][current_tetromino.position[1]])
-    {
-        playfield[current_tetromino.position[0]][current_tetromino.position[1]] = default_color;
+
+    let i = 0;
+    while (i < 3) {
+        let j = 0;
+        while (j < 3) {
+            if (playfield[current_tetromino.position[0] + j]) {
+                if (playfield[current_tetromino.position[0] + j][current_tetromino.position[1] + i] && current_tetromino.shape[j][i]) {
+                    playfield[current_tetromino.position[0] + j][current_tetromino.position[1] + i] = default_color;
+                }
+            }
+            j += 1;
+        }
+        i += 1;
     }
 }
 
-function draw_current_tetromino(tetromino)
+function draw_current_tetromino()
 {
     if (!playfield[current_tetromino.position[0]])
         return ;
-    if (playfield[current_tetromino.position[0]][current_tetromino.position[1]])
-    {
-        playfield[current_tetromino.position[0]][current_tetromino.position[1]] = tetromino.color;
+
+    let i = 0;
+    while (i < 3) {
+        let j = 0;
+        while (j < 3) {
+            if (playfield[current_tetromino.position[0] + j]) {
+                if (playfield[current_tetromino.position[0] + j][current_tetromino.position[1] + i] && current_tetromino.shape[j][i]) {
+                    playfield[current_tetromino.position[0] + j][current_tetromino.position[1] + i] = current_tetromino.color
+                }
+            }
+            j += 1;
+        }
+        i += 1;
     }
+
 }
 
 function runTetris(interval = 3000.0)
 {
-    if (current_tetromino)
-    {
+    if (current_tetromino) {
         erase_current_tetromino();
         current_tetromino.position[0] += 1;
-        draw_current_tetromino(current_tetromino);
+        draw_current_tetromino();
     }
-
 }

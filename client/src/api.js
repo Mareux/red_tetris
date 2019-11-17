@@ -8,6 +8,6 @@ export { subscribeToTimer };
 
 export function subscribeToTetris(callback) {
     socket.on('playfield', timestamp => callback(null, timestamp));
-    socket.emit('subscribeToTetris', 1000);
+    socket.emit('subscribeToTetris', 200);
 }
 
