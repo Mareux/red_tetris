@@ -23,9 +23,9 @@ class piece_square {
         this.name = "Square";
         this.shape =
             [[1, 1, 0, 0],
-             [1, 1, 0, 0],
-             [0, 0, 0, 0],
-             [0, 0, 0, 0]];
+                [1, 1, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]];
         this.color = yellow;
         this.position = [0, -1];
     }
@@ -59,21 +59,20 @@ class piece_t {
 
 var current_tetromino = new piece_square();
 
-io.on('connection', (client) => {
-        // console.log('client is subscribing to tetris with interval ', interval);
-        setInterval(() => {
-             client.emit('playfield', playfield);
-         }, 500);
 
-    setInterval(runTetris, 500);
-});
+// io.on('connection', (client) => {
+//
+// });
+
+setInterval(() => {
+    io.sockets.emit('playfield', playfield, runTetris());
+}, 1000);
 
 const port = 8000;
 io.listen(port);
 console.log('listening on port ', port);
 
-function erase_current_tetromino()
-{
+function erase_current_tetromino() {
     let row = 0;
     while (row < 4) {
         let column = 0;
@@ -89,8 +88,7 @@ function erase_current_tetromino()
     }
 }
 
-function draw_current_tetromino()
-{
+function draw_current_tetromino() {
     let row = 0;
     while (row < 4) {
         let column = 0;
@@ -138,8 +136,7 @@ function next_tetromino() {
 
 }
 
-function draw_playfield_in_console()
-{
+function draw_playfield_in_console() {
     console.log("----------- Playfield -----------")
     playfield.map(function (line) {
         let str = "";
@@ -154,8 +151,10 @@ function draw_playfield_in_console()
     console.log("---------------------------------\n\n");
 }
 
-function runTetris(interval = 3000.0)
-{
+function runTetris() {
+    console.log("Call");
+    console.log(new Date().getSeconds().toString() + "." + new Date().getMilliseconds().toString());
+
     if (current_tetromino) {
         erase_current_tetromino();
         current_tetromino.position[1] += 1;
@@ -163,9 +162,7 @@ function runTetris(interval = 3000.0)
             current_tetromino.position[1] -= 1;
             draw_current_tetromino();
             next_tetromino();
-        }
-        else
+        } else
             draw_current_tetromino();
-        draw_playfield_in_console();
     }
 }
