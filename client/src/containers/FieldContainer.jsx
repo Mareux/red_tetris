@@ -2,10 +2,10 @@ import React from 'react'
 import Field from "../components/Field";
 import './FieldContainer.css'
 
-const FieldContainer = () => {
+const FieldContainer = (props) => {
     return (
         <div className="field_container">
-            <Field/>
+            <Field socket = {props.socket}/>
         </div>
     );
 };

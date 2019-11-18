@@ -1,15 +1,19 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import './App.css';
 import GameContainer from "./containers/GameContainer";
-import Client from "./client";
+import io from 'socket.io-client';
 
 const App = () => {
-  return (
-      <>
-          <Client/>
-        {/*<GameContainer />*/}
-      </>
-  );
+
+    const socket = useMemo(() => {
+        return io('http://localhost:8000')
+    }, []);
+
+    return (
+        <>
+            <GameContainer socket={socket}/>
+        </>
+    );
 };
 
 export default App;

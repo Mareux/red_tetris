@@ -1,38 +1,31 @@
-import React, {useState} from 'react'
+import React from 'react'
 import './Field.css'
+import useSubscription from "../hooks/useSubscription";
 
-const tetris = [[2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+const color = 'gray';
 
+const line = [color, color, color, color, color, color, color, color, color, color];
 
-const Field = () =>{
+const playfield = [[...line],
+    [...line],
+    [...line],
+    [...line],
+    [...line],
+    [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line],
+    [...line], [...line], [...line], [...line], [...line], [...line]];
 
-    const [field, setField] = useState(tetris);
+const Field = (props) =>{
 
     return (
-        field.map(item => {
-            return <div className="row">{item.map(item => {
-                return <div className="column">{""}</div>
-            })}</div>;
-        })
+        <div>
+            {
+                useSubscription(props.socket,"playfield", playfield).map((row) => {
+                    return <div className="row"> {row.map((column) => {
+                        return (<div className={"column"} style={{backgroundColor: column}}>{""}</div>)
+                    })}</div>
+                })
+            }
+        </div>
     );
 };
 

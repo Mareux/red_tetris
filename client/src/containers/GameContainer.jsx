@@ -4,11 +4,11 @@ import './GameContainer.css'
 import Scoreboard from "../components/Scoreboard";
 import Next from "../components/Next";
 
-function GameContainer() {
+function GameContainer(props) {
     return (
       <div className="game_container">
           <Scoreboard/>
-          <FieldContainer/>
+          <FieldContainer socket = {props.socket}/>
           <Next/>
       </div>
     );

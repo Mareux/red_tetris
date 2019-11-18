@@ -60,12 +60,11 @@ class piece_t {
 var current_tetromino = new piece_square();
 
 io.on('connection', (client) => {
-    client.on('subscribeToTetris', (interval) => {
         // console.log('client is subscribing to tetris with interval ', interval);
         setInterval(() => {
              client.emit('playfield', playfield);
-         }, interval);
-    });
+         }, 500);
+
     setInterval(runTetris, 500);
 });
 
