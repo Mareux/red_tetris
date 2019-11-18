@@ -9,7 +9,7 @@ const App = () => {
         return io('http://localhost:8000')
     }, []);
 
-    onkeyup = (event) => {
+    onkeydown = (event) => {
         const key = event.code;
 
         if (key === 'ArrowUp'
@@ -17,6 +17,13 @@ const App = () => {
             || key === 'ArrowLeft'
             || key === 'ArrowRight')
             socket.emit(key);
+    };
+
+    onkeyup = (event) => {
+      const key = event.code;
+
+      if (key === "ArrowDown")
+          socket.emit(key + "Unpressed");
     };
 
     return (

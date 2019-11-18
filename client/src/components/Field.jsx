@@ -16,6 +16,11 @@ const playfield = [[...line],
 
 const Field = (props) =>{
 
+    onmousemove = (event) =>
+    {
+
+    };
+
     return (
         <div>
             {
