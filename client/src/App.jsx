@@ -7,7 +7,7 @@ const App = () => {
   return (
       <>
           <Client/>
-        <GameContainer />
+        {/*<GameContainer />*/}
       </>
   );
 };

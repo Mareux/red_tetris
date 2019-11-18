@@ -1,6 +1,6 @@
 const io = require('socket.io')();
 
-let default_color = [50, 50, 50];
+let default_color = 'gray';
 
 let color = default_color;
 
@@ -14,9 +14,9 @@ let playfield = [[...line],
     [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line],
     [...line], [...line], [...line], [...line], [...line], [...line]];
 
-let yellow = [255, 200, 0];
-let blue = [50, 50, 255];
-let purple = [255, 50, 255];
+let yellow = 'yellow';
+let blue = 'blue';
+let purple = 'purple';
 
 class piece_square {
     constructor(name, shape, color, position) {
