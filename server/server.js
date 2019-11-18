@@ -59,10 +59,11 @@ class piece_t {
 
 var current_tetromino = new piece_square();
 
-
-// io.on('connection', (client) => {
-//
-// });
+io.on('connection', (client) => {
+    client.on('ArrowUp', () => {
+        console.log("up");
+    })
+});
 
 setInterval(() => {
     io.sockets.emit('playfield', playfield, runTetris());
@@ -152,8 +153,8 @@ function draw_playfield_in_console() {
 }
 
 function runTetris() {
-    console.log("Call");
-    console.log(new Date().getSeconds().toString() + "." + new Date().getMilliseconds().toString());
+    // console.log("Call");
+    // console.log(new Date().getSeconds().toString() + "." + new Date().getMilliseconds().toString());
 
     if (current_tetromino) {
         erase_current_tetromino();

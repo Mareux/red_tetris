@@ -9,6 +9,16 @@ const App = () => {
         return io('http://localhost:8000')
     }, []);
 
+    onkeyup = (event) => {
+        const key = event.code;
+
+        if (key === 'ArrowUp'
+            || key === 'ArrowDown'
+            || key === 'ArrowLeft'
+            || key === 'ArrowRight')
+            socket.emit(key);
+    };
+
     return (
         <>
             <GameContainer socket={socket}/>
