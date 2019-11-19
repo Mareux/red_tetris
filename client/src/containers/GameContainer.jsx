@@ -1,14 +1,16 @@
 import React from 'react'
-import FieldContainer from "./FieldContainer";
 import './GameContainer.css'
 import Scoreboard from "../components/Scoreboard";
 import Next from "../components/Next";
+import Field from "../components/Field";
 
 function GameContainer(props) {
     return (
       <div className="game_container">
           <Scoreboard/>
-          <FieldContainer socket = {props.socket}/>
+          <div className="field_container">
+              {props.field}
+          </div>
           <Next/>
       </div>
     );

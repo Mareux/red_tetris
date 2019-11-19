@@ -208,26 +208,17 @@ function clear_line(arr, len)
     }
 }
 
-function collapse_lines(i)
-{
-
-    return [...playfield].map((item, index) => {
+function collapse_lines(i) {
+    return playfield.map((item, index) => {
         if (index === 0)
             return [...line];
         if (index <= i && index > 0) {
-            const tmp = [...playfield].slice(index - 1, index)[0];
-            console.log(index + "-tmp:  " + tmp);
-            return tmp;
+            return playfield[index - 1];
         }
         else {
-            console.log(index + ": " + item);
             return item;
         }
     });
-    // while (i >= 0) {
-    //     playfield[i] = [...playfield.slice(i - 1, i)];
-    //     i -= 1;
-    // }
 }
 
 function remove_filled_lines() {
@@ -272,7 +263,7 @@ function draw_playfield_in_console() {
     console.log("---------------------------------\n\n");
 }
 
-exports.runTetris = function() {
+function runTetris() {
     // console.log("Call");
     // console.log(new Date().getSeconds().toString() + "." + new Date().getMilliseconds().toString());
 
@@ -289,5 +280,7 @@ exports.runTetris = function() {
             draw_current_tetromino();
     }
     server.emit('playfield', playfield);
-    setTimeout(exports.runTetris, server.interval);
-};
+    setTimeout(runTetris, server.interval);
+}
+
+exports.runTetris = runTetris;

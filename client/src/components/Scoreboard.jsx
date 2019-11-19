@@ -8,14 +8,15 @@ function Scoreboard() {
     const [lines, setLines] = useState("");
 
     return (
-    <div className="board">
-        <p>Score</p>
-        <div>{score}</div>
-        <p>Level</p>
-        <div>{level}</div>
-        <p>Lines</p>
-        <div>{lines}</div>
-    </div>)
+        <div className="board">
+            <p>Score</p>
+            <div>{score}</div>
+            <p>Level</p>
+            <div>{level}</div>
+            <p>Lines</p>
+            <div>{lines}</div>
+        </div>
+    )
 }
 
 export default Scoreboard;

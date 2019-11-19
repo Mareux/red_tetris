@@ -1,7 +1,8 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect} from 'react';
 import './App.css';
 import GameContainer from "./containers/GameContainer";
 import io from 'socket.io-client';
+import Field from "./components/Field";
 
 const App = () => {
 
@@ -9,26 +10,30 @@ const App = () => {
         return io('http://localhost:8000')
     }, []);
 
-    onkeydown = (event) => {
-        const key = event.code;
+    useEffect(() => {
+        window.onkeydown = (event) => {
+            const key = event.code;
 
-        if (key === 'ArrowUp'
-            || key === 'ArrowDown'
-            || key === 'ArrowLeft'
-            || key === 'ArrowRight')
-            socket.emit(key);
-    };
+            if (key === 'ArrowUp'
+                || key === 'ArrowDown'
+                || key === 'ArrowLeft'
+                || key === 'ArrowRight')
+                socket.emit(key);
+        };
 
-    onkeyup = (event) => {
-      const key = event.code;
+        window.onkeyup = (event) => {
+            const key = event.code;
 
-      if (key === "ArrowDown")
-          socket.emit(key + "Unpressed");
-    };
+            if (key === "ArrowDown")
+                socket.emit(key + "Unpressed");
+        };
+    }, [socket]);
 
     return (
         <>
-            <GameContainer socket={socket}/>
+            <GameContainer
+                field={<Field socket={socket}/>}
+            />
         </>
     );
 };
