@@ -16,10 +16,10 @@ io.on('connection', (client) => {
         exports.interval = 300;
     });
     client.on('ArrowLeft', () => {
-        tetris.move_left();
+        tetris.moveLeft();
     });
     client.on('ArrowRight', () => {
-        tetris.move_right();
+        tetris.moveRight();
     })
 })
 
