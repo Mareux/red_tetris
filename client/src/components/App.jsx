@@ -1,8 +1,8 @@
 import React, {useMemo, useEffect} from 'react';
 import './App.css';
-import GameContainer from "./containers/GameContainer";
+import GameContainer from "../containers/GameContainer";
 import io from 'socket.io-client';
-import Field from "./components/Field";
+import Field from "./Field";
 
 const App = () => {
 
