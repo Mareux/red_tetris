@@ -1,4 +1,5 @@
 const server = require("./server");
+const rotations = require("./tetrominos");
 
 let default_color = 'gray';
 
@@ -18,161 +19,28 @@ let yellow = 'yellow';
 let blue = 'blue';
 let purple = 'purple';
 
-const rotationLine = [
-    [
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0]
-    ]];
+class Player {
+    constructor(playfield, ID = false, nextTetromino = false) {
+        this.playfield = playfield;
+        this.nextTetromino = nextTetromino;
+        this.ID = ID;
+    }
+}
 
-const rotationT = [
-    [
-        [0, 1, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [1, 1, 1, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [1, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ]];
+class GameSession {
+    constructor(players) {
+        this.players = Array();
+    }
+}
 
-const rotationL = [
-    [
-        [0, 0, 1, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [1, 1, 1, 0],
-        [1, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [1, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ]];
+let sessions = Array();
 
-const rotationReverseL = [
-    [
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 1, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0]
-    ]];
-
-const rotationS = [
-    [
-        [0, 1, 1, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [1, 0, 0, 0],
-        [1, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ]];
-
-const rotationZ = [
-    [
-        [1, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 1, 0],
-        [0, 1, 1, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 0, 0, 0],
-        [1, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0]
-    ],
-    [
-        [0, 1, 0, 0],
-        [1, 1, 0, 0],
-        [1, 0, 0, 0],
-        [0, 0, 0, 0]
-    ]];
+function createGameSession(hostID) {
+    let session = new GameSession();
+    let player = new Player(playfield, hostID);
+    session.players.push(player);
+    sessions.push(session);
+}
 
 function tryTetrominoPosition(position) {
     let tmp = [...currentTetromino.position];
@@ -217,17 +85,17 @@ function wallKick() {
 
 cancelRotation = function () {
     if (currentTetromino.name === "Line")
-        unrotate(rotationLine);
+        unrotate(rotations.Line);
     else if (currentTetromino.name === "T")
-        unrotate(rotationT);
+        unrotate(rotations.T);
     else if (currentTetromino.name === "L")
-        unrotate(rotationL);
+        unrotate(rotations.L);
     else if (currentTetromino.name === "ReverseL")
-        unrotate(rotationReverseL);
+        unrotate(rotations.ReverseL);
     else if (currentTetromino.name === "S")
-        unrotate(rotationS);
+        unrotate(rotations.S);
     else if (currentTetromino.name === "Z")
-        unrotate(rotationZ);
+        unrotate(rotations.Z);
     server.emit('playfield', playfield);
 };
 
@@ -257,17 +125,17 @@ function rotate(arr) {
 
 exports.rotate_current_tetromino = function () {
     if (currentTetromino.name === "Line")
-        rotate(rotationLine);
+        rotate(rotations.Line);
     else if (currentTetromino.name === "T")
-        rotate(rotationT);
+        rotate(rotations.T);
     else if (currentTetromino.name === "L")
-        rotate(rotationL);
+        rotate(rotations.L);
     else if (currentTetromino.name === "ReverseL")
-        rotate(rotationReverseL);
+        rotate(rotations.ReverseL);
     else if (currentTetromino.name === "S")
-        rotate(rotationS);
+        rotate(rotations.S);
     else if (currentTetromino.name === "Z")
-        rotate(rotationZ);
+        rotate(rotations.Z);
     server.emit('playfield', playfield);
 };
 
@@ -287,7 +155,7 @@ class pieceSquare {
 class pieceLine {
     constructor(name, shape, color, position, rotation) {
         this.name = "Line";
-        this.shape = rotationLine[0];
+        this.shape = rotations.Line[0];
         this.color = 'cyan';
         this.position = [0, -1];
         this.rotation = 0;
@@ -297,7 +165,7 @@ class pieceLine {
 class pieceT {
     constructor(name, shape, color, position, rotation) {
         this.name = "T";
-        this.shape = rotationT[0];
+        this.shape = rotations.T[0];
         this.color = purple;
         this.position = [0, -1];
         this.rotation = 0;
@@ -307,7 +175,7 @@ class pieceT {
 class pieceL {
     constructor(name, shape, color, position, rotation) {
         this.name = "L";
-        this.shape = rotationL[0];
+        this.shape = rotations.L[0];
         this.color = 'orange';
         this.position = [0, -1];
         this.rotation = 0;
@@ -317,7 +185,7 @@ class pieceL {
 class pieceReverseL {
     constructor(name, shape, color, position, rotation) {
         this.name = "ReverseL";
-        this.shape = rotationReverseL[0];
+        this.shape = rotations.ReverseL[0];
         this.color = 'blue';
         this.position = [0, -1];
         this.rotation = 0;
@@ -327,7 +195,7 @@ class pieceReverseL {
 class pieceS {
     constructor(name, shape, color, position, rotation) {
         this.name = "S";
-        this.shape = rotationS[0];
+        this.shape = rotations.S[0];
         this.color = 'green';
         this.position = [0, -1];
         this.rotation = 0;
@@ -337,7 +205,7 @@ class pieceS {
 class pieceZ {
     constructor(name, shape, color, position, rotation) {
         this.name = "Z";
-        this.shape = rotationZ[0];
+        this.shape = rotations.Z[0];
         this.color = 'red';
         this.position = [0, -1];
         this.rotation = 0;
@@ -475,7 +343,7 @@ let tetrominos = [pieceLine, pieceL, pieceReverseL, pieceSquare, pieceS, pieceZ,
 function nextTetromino() {
     let index = Math.floor(Math.random() * tetrominos.length);
 
-    currentTetromino = new tetrominos[index];
+    return new tetrominos[index];
 }
 
 function runTetris() {
