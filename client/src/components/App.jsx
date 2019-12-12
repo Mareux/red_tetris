@@ -29,6 +29,7 @@ const App = () => {
         };
     }, [socket]);
 
+    location.hash = 35;
     return (
         <>
             <GameContainer
