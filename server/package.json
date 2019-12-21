@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "rm -rf build && webpack --mode development && node build/server.js"
+    "build": "rm -rf build && webpack --mode development",
+    "start": "node build/server.js"
   },
   "keywords": [],
   "author": "",
