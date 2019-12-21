@@ -11,6 +11,11 @@ const App = () => {
     }, []);
 
     useEffect(() => {
+        if (location.hash)
+            socket.emit(location.hash);
+    }, [socket]);
+
+    useEffect(() => {
         window.onkeydown = (event) => {
             const key = event.code;
 
