@@ -12,7 +12,7 @@ const App = () => {
 
     useEffect(() => {
         if (location.hash)
-            socket.emit(location.hash);
+            socket.emit("Hash", location.hash);
     }, [socket]);
 
     useEffect(() => {
