@@ -6,6 +6,7 @@ import Field from "./Field";
 
 const App = () => {
 
+
     const socket = useMemo(() => {
         return io('http://localhost:8000')
     }, []);
@@ -34,7 +35,6 @@ const App = () => {
         };
     }, [socket]);
 
-    location.hash = 35;
     return (
         <>
             <GameContainer

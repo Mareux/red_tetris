@@ -3,11 +3,13 @@ const tetris = require('./tetris');
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-
-
 exports.interval = 300;
 
 io.on('connection', (client) => {
+    console.log("Greetings, traveler!");
+    client.on('Hash', function (string) {
+        tetris.joinTetris(client, string);
+    });
     client.on('ArrowUp', () => {
         tetris.rotate_current_tetromino();
     });
@@ -32,8 +34,6 @@ exports.emit = (event, args) => {
 const on = (event, callback, emit) => {
 
 };
-
-setTimeout(tetris.runTetris, exports.interval);
 
 const port = 8000;
 server.listen(port);

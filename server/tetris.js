@@ -31,6 +31,23 @@ class GameSession {
     constructor(players) {
         this.players = Array();
     }
+
+}
+
+GameSession.prototype.run = function() {
+    if (currentTetromino) {
+        eraseCurrentTetromino();
+        currentTetromino.position[1] += 1;
+        if (collisionDetected()) {
+            currentTetromino.position[1] -= 1;
+            drawCurrentTetromino();
+            removeFilledLines();
+            nextTetromino();
+        } else
+            drawCurrentTetromino();
+    }
+    server.emit('playfield', playfield);
+    setTimeout(runTetris, server.interval);
 }
 
 let sessions = Array();
@@ -346,23 +363,12 @@ function nextTetromino() {
     return new tetrominos[index];
 }
 
-function runTetris() {
-    // console.log("Call");
-    // console.log(new Date().getSeconds().toString() + "." + new Date().getMilliseconds().toString());
+function joinTetris(client, hash) {
+    var split = hash.split('[');
+    split[0] = split[0].slice(1);
+    split[1] = split[1].slice(0, split[1].length - 1);
+    console.log(split[0]);
+    console.log(split[1]);
+};
 
-    if (currentTetromino) {
-        eraseCurrentTetromino();
-        currentTetromino.position[1] += 1;
-        if (collisionDetected()) {
-            currentTetromino.position[1] -= 1;
-            drawCurrentTetromino();
-            removeFilledLines();
-            nextTetromino();
-        } else
-            drawCurrentTetromino();
-    }
-    server.emit('playfield', playfield);
-    setTimeout(runTetris, server.interval);
-}
-
-exports.runTetris = runTetris;
+exports.joinTetris = joinTetris;
