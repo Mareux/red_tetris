@@ -5,58 +5,101 @@ let default_color = 'gray';
 
 let color = default_color;
 
-let line = [color, color, color, color, color, color, color, color, color, color];
-
-let playfield = [[...line],
-    [...line],
-    [...line],
-    [...line],
-    [...line],
-    [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line],
-    [...line], [...line], [...line], [...line], [...line], [...line]];
-
 let yellow = 'yellow';
 let blue = 'blue';
 let purple = 'purple';
 
+function createPlayfield() {
+    let line = [color, color, color, color, color, color, color, color, color, color];
+    let playfield = [[...line],
+        [...line],
+        [...line],
+        [...line],
+        [...line],
+        [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line],
+        [...line], [...line], [...line], [...line], [...line], [...line]];
+    return playfield;
+}
+
 class Player {
-    constructor(playfield, ID = false, nextTetromino = false) {
-        this.playfield = playfield;
-        this.nextTetromino = nextTetromino;
-        this.ID = ID;
+    constructor() {
+        this.session = false;
+        this.playfield = createPlayfield();
+        this.name = "";
+        this.currentTetromino = nextTetromino;
+        this.socketID = false;
+        this.play = () => {
+            if (this.currentTetromino) {
+                        eraseCurrentTetromino(this.playfield, this.currentTetromino);
+                        this.currentTetromino.position[1] += 1;
+                        if (collisionDetected(this.playfield, this.currentTetromino)) {
+                            this.currentTetromino.position[1] -= 1;
+                            drawCurrentTetromino(this.playfield, this.currentTetromino);
+                            removeFilledLines(this.playfield);
+                            this.currentTetromino = nextTetromino();
+                        } else
+                            drawCurrentTetromino(this.playfield, this.currentTetromino);
+                    }
+
+            server.emit('playfield', this.playfield, this.socketID);
+        }
     }
 }
 
 class GameSession {
-    constructor(players) {
+    constructor() {
+        this.room = "";
+        this.host = "";
         this.players = Array();
     }
-
-}
-
-GameSession.prototype.run = function() {
-    if (currentTetromino) {
-        eraseCurrentTetromino();
-        currentTetromino.position[1] += 1;
-        if (collisionDetected()) {
-            currentTetromino.position[1] -= 1;
-            drawCurrentTetromino();
-            removeFilledLines();
-            nextTetromino();
-        } else
-            drawCurrentTetromino();
-    }
-    server.emit('playfield', playfield);
-    setTimeout(runTetris, server.interval);
 }
 
 let sessions = Array();
 
-function createGameSession(hostID) {
+function findGameSession(room) {
+    let result = false;
+    sessions.map(function (session) {
+        if (session.room === room) {
+            result = session;
+        }
+    });
+    return (result);
+}
+
+function findUserInSession(room, username) {
+    let session = findGameSession(room);
+    let result = false;
+
+    session.players.map(function (user) {
+        if (user.name === username) {
+            result = user;
+        }
+    });
+    return (result);
+}
+
+function createGameSession(room, host, socketID) {
     let session = new GameSession();
-    let player = new Player(playfield, hostID);
+    session.room = room;
+    session.host = host;
+
+    let player = new Player();
+    player.session = session;
+    player.name = host;
+    player.currentTetromino = nextTetromino();
+    player.socketID = socketID;
     session.players.push(player);
     sessions.push(session);
+}
+
+function joinGameSession(room, user, socketID) {
+    let session = findGameSession(room);
+    let player = new Player();
+    player.session = session;
+    player.name = user;
+    player.currentTetromino = nextTetromino();
+    player.socketID = socketID;
+    session.players.push(player);
 }
 
 function tryTetrominoPosition(position) {
@@ -250,7 +293,7 @@ exports.moveRight = function () {
 };
 
 
-function eraseCurrentTetromino() {
+function eraseCurrentTetromino(playfield, currentTetromino) {
     let row = 0;
     while (row < 4) {
         let column = 0;
@@ -266,7 +309,7 @@ function eraseCurrentTetromino() {
     }
 }
 
-function drawCurrentTetromino() {
+function drawCurrentTetromino(playfield, currentTetromino) {
     let row = 0;
     while (row < 4) {
         let column = 0;
@@ -282,7 +325,7 @@ function drawCurrentTetromino() {
     }
 }
 
-function collisionDetected() {
+function collisionDetected(playfield, currentTetromino) {
     let row = 0;
     while (row < 4) {
         let column = 0;
@@ -338,7 +381,7 @@ function collapseLines(i) {
     });
 }
 
-function removeFilledLines() {
+function removeFilledLines(playfield) {
     let i = currentTetromino.position[1];
     let limit = i + 4;
     let result = false;
@@ -363,12 +406,39 @@ function nextTetromino() {
     return new tetrominos[index];
 }
 
-function joinTetris(client, hash) {
-    var split = hash.split('[');
-    split[0] = split[0].slice(1);
-    split[1] = split[1].slice(0, split[1].length - 1);
-    console.log(split[0]);
-    console.log(split[1]);
-};
+function joinTetris(client, hash, socketID) {
+    let split = hash.split('[');
+    let room, username, user;
+    room = split[0].slice(1);
+    if (split[1]) {
+        username = split[1].slice(0, split[1].length - 1);
+    }
+    console.log("User \"" + username + "\" tried to connect to room: \"" + room + "\"");
+    let session = findGameSession(room);
+    if (session === false) {
+        console.log("Session not found, attempting to create a new session");
+        createGameSession(room, username, socketID);
+        session = findGameSession(room);
+        if (!session) {
+            console.log("Failed to create a session.");
+        }
+        else {
+            console.log("Session \"" + room + "\" successfully created with \"" + session.host + "\" as host.");
+        }
+        user = session.players[0];
+    }
+    else {
+        console.log("Session found, attempting to join.");
+        user = findUserInSession(room, username);
+        if (!user) {
+            console.log("User \"" + username + "\" not found in session, adding...");
+            joinGameSession(room, username, socketID);
+        }
+        else {
+            console.log("User \"" + username + "\" is already in session.");
+        }
+    }
+    setInterval(user.play, server.interval);
+}
 
 exports.joinTetris = joinTetris;

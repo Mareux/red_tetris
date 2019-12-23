@@ -6,9 +6,9 @@ const io = require('socket.io')(server);
 exports.interval = 300;
 
 io.on('connection', (client) => {
-    console.log("Greetings, traveler!");
+    console.log("\nConnection happened.");
     client.on('Hash', function (string) {
-        tetris.joinTetris(client, string);
+        tetris.joinTetris(client, string, client.id);
     });
     client.on('ArrowUp', () => {
         tetris.rotate_current_tetromino();
@@ -25,10 +25,10 @@ io.on('connection', (client) => {
     client.on('ArrowRight', () => {
         tetris.moveRight();
     })
-})
+});
 
-exports.emit = (event, args) => {
-    io.sockets.emit(event, args);
+exports.emit = (event, args, socketID) => {
+    io.to(`${socketID}`).emit(event, args);
 };
 
 const on = (event, callback, emit) => {
