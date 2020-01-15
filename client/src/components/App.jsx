@@ -3,10 +3,10 @@ import './App.css';
 import GameContainer from "../containers/GameContainer";
 import io from 'socket.io-client';
 import Field from "./Field";
-import {createStore} from "redux";
-import gameReducer from "../reducers/gameReducer";
-
-const store = createStore(gameReducer);
+// import {createStore} from "redux";
+// import gameReducer from "../reducers/gameReducer";
+//
+// const store = createStore(gameReducer);
 
 
 const App = () => {
