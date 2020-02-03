@@ -11,8 +11,8 @@ io.on('connection', (client) => {
     client.on('Hash', function (string) {
         tetris.joinTetris(client, string, client.id);
     });
-    client.on('ArrowUp', () => {
-        tetris.rotate_current_tetromino();
+    client.on('ArrowUp', (usernameAndRoom) => {
+        tetris.rotateCurrentTetromino(usernameAndRoom);
     });
     client.on('ArrowDown', () => {
         exports.interval = 50;
@@ -20,11 +20,11 @@ io.on('connection', (client) => {
     client.on('ArrowDownUnpressed', () => {
         exports.interval = 300;
     });
-    client.on('ArrowLeft', () => {
-        tetris.moveLeft();
+    client.on('ArrowLeft', (usernameAndRoom) => {
+        tetris.moveLeft(usernameAndRoom);
     });
-    client.on('ArrowRight', () => {
-        tetris.moveRight();
+    client.on('ArrowRight', (usernameAndRoom) => {
+        tetris.moveRight(usernameAndRoom);
     })
 });
 

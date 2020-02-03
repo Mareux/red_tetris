@@ -21,12 +21,18 @@ function createPlayfield() {
     return playfield;
 }
 
+function emitEvents(thisPlayer) {
+    server.emit('playfield', thisPlayer.playfield, thisPlayer.socketID);
+    server.emit('nextTetromino', thisPlayer.nextTetromino, thisPlayer.socketID);
+}
+
 class Player {
     constructor() {
         this.session = false;
         this.playfield = createPlayfield();
         this.name = "";
-        this.currentTetromino = nextTetromino;
+        this.currentTetromino = nextTetromino();
+        this.nextTetromino = nextTetromino();
         this.socketID = false;
         this.play = () => {
             if (this.currentTetromino) {
@@ -35,13 +41,123 @@ class Player {
                         if (collisionDetected(this.playfield, this.currentTetromino)) {
                             this.currentTetromino.position[1] -= 1;
                             drawCurrentTetromino(this.playfield, this.currentTetromino);
-                            removeFilledLines(this.playfield);
-                            this.currentTetromino = nextTetromino();
+                            removeFilledLines(this.playfield, this.currentTetromino);
+                            this.newTetromino();
                         } else
                             drawCurrentTetromino(this.playfield, this.currentTetromino);
                     }
+           server.emit('playfield', this.playfield, this.socketID);
+        };
+        this.newTetromino = function() {
+            this.currentTetromino = this.nextTetromino;
+            this.nextTetromino = nextTetromino();
+        }
+        this.moveLeft = function() {
+            eraseCurrentTetromino(this.playfield, this.currentTetromino);
+            this.currentTetromino.position[0] -= 1;
+            if (collisionDetected(this.playfield, this.currentTetromino))
+                this.currentTetromino.position[0] += 1;
+            drawCurrentTetromino(this.playfield, this.currentTetromino);
+            emitEvents(this);
+        };
+        this.moveRight = function() {
+            eraseCurrentTetromino(this.playfield, this.currentTetromino);
+            this.currentTetromino.position[0] += 1;
+            if (collisionDetected(this.playfield, this.currentTetromino))
+                this.currentTetromino.position[0] -= 1;
+            drawCurrentTetromino(this.playfield, this.currentTetromino);
+            emitEvents(this);
+        };
+        this.cancelRotation = function () {
+            if (this.currentTetromino.name === "Line")
+                this.unrotate(rotations.Line);
+            else if (this.currentTetromino.name === "T")
+                this.unrotate(rotations.T);
+            else if (this.currentTetromino.name === "L")
+                this.unrotate(rotations.L);
+            else if (this.currentTetromino.name === "ReverseL")
+                this.unrotate(rotations.ReverseL);
+            else if (this.currentTetromino.name === "S")
+                this.unrotate(rotations.S);
+            else if (this.currentTetromino.name === "Z")
+                this.unrotate(rotations.Z);
+            emitEvents(this);
+        };
+        this.unrotate = function(arr) {
+            if (this.currentTetromino.rotation < 1) {
+                this.currentTetromino.shape = arr[3];
+                this.currentTetromino.rotation = 3;
+            } else {
+                this.currentTetromino.rotation -= 1;
+                this.currentTetromino.shape = arr[this.currentTetromino.rotation];
+            }
+        }
+        this.tryTetrominoPosition = function(position) {
+            let tmp = [...(this.currentTetromino.position)];
 
-            server.emit('playfield', this.playfield, this.socketID);
+            this.currentTetromino.position[0] = position[0];
+            this.currentTetromino.position[1] = position[1];
+            if (collisionDetected(this.playfield, this.currentTetromino)) {
+                this.currentTetromino.position[0] = tmp[0];
+                this.currentTetromino.position[1] = tmp[1];
+                return false;
+            }
+            return true;
+        }
+        this.wallKick = function() {
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0] - 1, this.currentTetromino.position[1]])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0] + 1, this.currentTetromino.position[1]])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0], this.currentTetromino.position[1] - 1])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0], this.currentTetromino.position[1] + 1])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0] - 2, this.currentTetromino.position[1]])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0] + 2, this.currentTetromino.position[1]])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0], this.currentTetromino.position[1] - 2])) {
+                return ;
+            }
+            if (this.tryTetrominoPosition([this.currentTetromino.position[0], this.currentTetromino.position[1] + 2])) {
+                return ;
+            }
+            this.cancelRotation();
+        }
+        this.rotate = function(arr) {
+            eraseCurrentTetromino(this.playfield, this.currentTetromino);
+            if (this.currentTetromino.rotation > 2) {
+                this.currentTetromino.shape = arr[0];
+                this.currentTetromino.rotation = 0;
+            } else {
+                this.currentTetromino.rotation += 1;
+                this.currentTetromino.shape = arr[this.currentTetromino.rotation];
+            }
+            if (collisionDetected(this.playfield, this.currentTetromino))
+                this.wallKick();
+            drawCurrentTetromino(this.playfield, this.currentTetromino);
+        }
+        this.rotateCurrentTetromino = function() {
+            if (this.currentTetromino.name === "Line")
+                this.rotate(rotations.Line);
+            else if (this.currentTetromino.name === "T")
+                this.rotate(rotations.T);
+            else if (this.currentTetromino.name === "L")
+                this.rotate(rotations.L);
+            else if (this.currentTetromino.name === "ReverseL")
+                this.rotate(rotations.ReverseL);
+            else if (this.currentTetromino.name === "S")
+                this.rotate(rotations.S);
+            else if (this.currentTetromino.name === "Z")
+                this.rotate(rotations.Z);
+            emitEvents(this);
         }
     }
 }
@@ -69,7 +185,8 @@ function findGameSession(room) {
 function findUserInSession(room, username) {
     let session = findGameSession(room);
     let result = false;
-
+    if (!session.players)
+        return ;
     session.players.map(function (user) {
         if (user.name === username) {
             result = user;
@@ -86,7 +203,6 @@ function createGameSession(room, host, socketID) {
     let player = new Player();
     player.session = session;
     player.name = host;
-    player.currentTetromino = nextTetromino();
     player.socketID = socketID;
     session.players.push(player);
     sessions.push(session);
@@ -97,107 +213,18 @@ function joinGameSession(room, user, socketID) {
     let player = new Player();
     player.session = session;
     player.name = user;
-    player.currentTetromino = nextTetromino();
     player.socketID = socketID;
     session.players.push(player);
 }
 
-function tryTetrominoPosition(position) {
-    let tmp = [...currentTetromino.position];
 
-    currentTetromino.position[0] = position[0];
-    currentTetromino.position[1] = position[1];
-    if (collisionDetected()) {
-        currentTetromino.position[0] = tmp[0];
-        currentTetromino.position[1] = tmp[1];
-        return false;
-    }
-    return true;
-}
 
-function wallKick() {
-    if (tryTetrominoPosition([currentTetromino.position[0] - 1, currentTetromino.position[1]])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0] + 1, currentTetromino.position[1]])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0], currentTetromino.position[1] - 1])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0], currentTetromino.position[1] + 1])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0] - 2, currentTetromino.position[1]])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0] + 2, currentTetromino.position[1]])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0], currentTetromino.position[1] - 2])) {
-        return ;
-    }
-    if (tryTetrominoPosition([currentTetromino.position[0], currentTetromino.position[1] + 2])) {
-        return ;
-    }
-    cancelRotation();
-}
 
-cancelRotation = function () {
-    if (currentTetromino.name === "Line")
-        unrotate(rotations.Line);
-    else if (currentTetromino.name === "T")
-        unrotate(rotations.T);
-    else if (currentTetromino.name === "L")
-        unrotate(rotations.L);
-    else if (currentTetromino.name === "ReverseL")
-        unrotate(rotations.ReverseL);
-    else if (currentTetromino.name === "S")
-        unrotate(rotations.S);
-    else if (currentTetromino.name === "Z")
-        unrotate(rotations.Z);
-    server.emit('playfield', playfield);
-};
 
-function unrotate(arr) {
-    if (currentTetromino.rotation < 1) {
-        currentTetromino.shape = arr[3];
-        currentTetromino.rotation = 3;
-    } else {
-        currentTetromino.rotation -= 1;
-        currentTetromino.shape = arr[currentTetromino.rotation];
-    }
-}
 
-function rotate(arr) {
-    eraseCurrentTetromino();
-    if (currentTetromino.rotation > 2) {
-        currentTetromino.shape = arr[0];
-        currentTetromino.rotation = 0;
-    } else {
-        currentTetromino.rotation += 1;
-        currentTetromino.shape = arr[currentTetromino.rotation];
-    }
-    if (collisionDetected())
-        wallKick();
-    drawCurrentTetromino();
-}
 
-exports.rotate_current_tetromino = function () {
-    if (currentTetromino.name === "Line")
-        rotate(rotations.Line);
-    else if (currentTetromino.name === "T")
-        rotate(rotations.T);
-    else if (currentTetromino.name === "L")
-        rotate(rotations.L);
-    else if (currentTetromino.name === "ReverseL")
-        rotate(rotations.ReverseL);
-    else if (currentTetromino.name === "S")
-        rotate(rotations.S);
-    else if (currentTetromino.name === "Z")
-        rotate(rotations.Z);
-    server.emit('playfield', playfield);
-};
+
+
 
 class pieceSquare {
     constructor(name, shape, color, position) {
@@ -272,25 +299,22 @@ class pieceZ {
     }
 }
 
-var currentTetromino = new pieceSquare();
 
-exports.moveLeft = function () {
-    eraseCurrentTetromino();
-    currentTetromino.position[0] -= 1;
-    if (collisionDetected())
-        currentTetromino.position[0] += 1;
-    drawCurrentTetromino();
-    server.emit('playfield', playfield);
+
+exports.moveLeft = function(usernameAndRoom) {
+    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    player.moveLeft();
 };
 
-exports.moveRight = function () {
-    eraseCurrentTetromino();
-    currentTetromino.position[0] += 1;
-    if (collisionDetected())
-        currentTetromino.position[0] -= 1;
-    drawCurrentTetromino();
-    server.emit('playfield', playfield);
+exports.moveRight = function(usernameAndRoom) {
+    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    player.moveRight();
 };
+
+exports.rotateCurrentTetromino = function(usernameAndRoom) {
+    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    player.rotateCurrentTetromino();
+}
 
 
 function eraseCurrentTetromino(playfield, currentTetromino) {
@@ -369,7 +393,8 @@ function clearLine(arr, len) {
     }
 }
 
-function collapseLines(i) {
+function collapseLines(i, playfield) {
+    let line = [color, color, color, color, color, color, color, color, color, color];
     return playfield.map((item, index) => {
         if (index === 0)
             return [...line];
@@ -381,21 +406,19 @@ function collapseLines(i) {
     });
 }
 
-function removeFilledLines(playfield) {
+function removeFilledLines(playfield, currentTetromino) {
     let i = currentTetromino.position[1];
     let limit = i + 4;
-    let result = false;
 
     while (i < limit) {
         if (playfield[i]) {
             if (lineIsFilled(playfield[i], 10)) {
                 clearLine(playfield[i], 10);
-                playfield = collapseLines(i);
+                playfield = collapseLines(i, playfield);
             }
         }
         i += 1;
     }
-    return (result);
 }
 
 let tetrominos = [pieceLine, pieceL, pieceReverseL, pieceSquare, pieceS, pieceZ, pieceT];
@@ -413,6 +436,7 @@ function joinTetris(client, hash, socketID) {
     if (split[1]) {
         username = split[1].slice(0, split[1].length - 1);
     }
+    console.log("joinTetris() called");
     console.log("User \"" + username + "\" tried to connect to room: \"" + room + "\"");
     let session = findGameSession(room);
     if (session === false) {

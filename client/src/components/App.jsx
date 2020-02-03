@@ -8,6 +8,22 @@ import Field from "./Field";
 //
 // const store = createStore(gameReducer);
 
+let clientData = {
+    userName: "default",
+    userRoom: "default"
+}
+
+function getClientData(hash) {
+    let split = hash.split('[');
+    let room, username;
+    room = split[0].slice(1);
+    if (split[1]) {
+        username = split[1].slice(0, split[1].length - 1);
+    }
+    console.log("UserData: " + room + " " + username);
+    clientData.userName = username;
+    clientData.userRoom = room;
+}
 
 const App = () => {
 
@@ -17,8 +33,10 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        if (location.hash)
+        if (location.hash) {
+            getClientData(location.hash);
             socket.emit("Hash", location.hash);
+        }
     }, [socket]);
 
     useEffect(() => {
@@ -28,8 +46,9 @@ const App = () => {
             if (key === 'ArrowUp'
                 || key === 'ArrowDown'
                 || key === 'ArrowLeft'
-                || key === 'ArrowRight')
-                socket.emit(key);
+                || key === 'ArrowRight') {
+                socket.emit(key, [clientData.userName, clientData.userRoom]);
+            }
         };
 
         window.onkeyup = (event) => {
