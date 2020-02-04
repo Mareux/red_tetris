@@ -1,6 +1,6 @@
 import React from 'react'
 import './Next.css'
-import useSubscription from "../hooks/useSubscription";
+import useFieldSubscription from "../hooks/useFieldSubscription";
 
 const figureInitialState = [[0, 0, 0, 0],
     [0, 0, 0, 0],
