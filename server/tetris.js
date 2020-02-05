@@ -2,6 +2,7 @@ const server = require("./server");
 const rotations = require("./tetrominos");
 
 let default_color = 'gray';
+let disabledColor = 'pink';
 
 let color = default_color;
 
@@ -31,8 +32,9 @@ class Player {
         this.session = false;
         this.playfield = createPlayfield();
         this.name = "";
-        this.currentTetromino = nextTetromino();
-        this.nextTetromino = nextTetromino();
+        this.currentTetromino = false
+        this.nextTetromino = false;
+        this.nextTetrominoIndex = 0;
         this.socketID = false;
         this.play = () => {
             if (this.currentTetromino) {
@@ -41,7 +43,10 @@ class Player {
                         if (collisionDetected(this.playfield, this.currentTetromino)) {
                             this.currentTetromino.position[1] -= 1;
                             drawCurrentTetromino(this.playfield, this.currentTetromino);
-                            removeFilledLines(this.playfield, this.currentTetromino);
+                            let clearedLines = removeFilledLines(this.playfield, this.currentTetromino);
+                            for (let i = 0; i < clearedLines; i++) {
+                                this.session.disableLines(this);
+                            }
                             this.newTetromino();
                         } else
                             drawCurrentTetromino(this.playfield, this.currentTetromino);
@@ -50,7 +55,10 @@ class Player {
         };
         this.newTetromino = function() {
             this.currentTetromino = this.nextTetromino;
-            this.nextTetromino = nextTetromino();
+            this.nextTetrominoIndex++;
+            if (!this.session.tetrominos[this.nextTetrominoIndex])
+                this.session.newTetromino();
+            this.nextTetromino = JSON.parse(JSON.stringify(this.session.tetrominos[this.nextTetrominoIndex]));
         }
         this.moveLeft = function() {
             eraseCurrentTetromino(this.playfield, this.currentTetromino);
@@ -159,6 +167,16 @@ class Player {
                 this.rotate(rotations.Z);
             emitEvents(this);
         }
+        this.disableLine = function() {
+            for (let row = 0; row < this.playfield.length - 1; row++) {
+                for (let column = 0; column < 10; column++) {
+                    this.playfield[row][column] = this.playfield[row + 1][column];
+                }
+            }
+            for (let column = 0; column < 10; column++) {
+                this.playfield[this.playfield.length - 1][column] = disabledColor;
+            }
+        }
     }
 }
 
@@ -167,25 +185,33 @@ class GameSession {
         this.room = "";
         this.host = "";
         this.players = Array();
+        this.tetrominos = Array(nextTetromino(), nextTetromino());
+        this.newTetromino = function () {
+            this.tetrominos.push(nextTetromino());
+        }
+        this.disableLines = function(user) {
+            this.players.forEach(function(element) {
+              if (element !== user) {
+                  element.disableLine();
+              }
+            });
+            }
+        }
     }
-}
 
 let sessions = Array();
 
 function findGameSession(room) {
-    let result = false;
-    sessions.map(function (session) {
-        if (session.room === room) {
-            result = session;
-        }
+    return sessions.find((element) => {
+        if (element.room === room)
+            return element;
     });
-    return (result);
 }
 
 function findUserInSession(room, username) {
     let session = findGameSession(room);
     let result = false;
-    if (!session.players)
+    if (!session)
         return ;
     session.players.map(function (user) {
         if (user.name === username) {
@@ -195,35 +221,31 @@ function findUserInSession(room, username) {
     return (result);
 }
 
+function createPlayer(session, name, socketID) {
+    let player = new Player();
+    player.session = session;
+    player.name = name;
+    player.socketID = socketID;
+    session.players.push(player);
+    player.currentTetromino = JSON.parse(JSON.stringify(session.tetrominos[0]));
+    player.nextTetromino = JSON.parse(JSON.stringify(session.tetrominos[1]));
+    return player;
+}
+
 function createGameSession(room, host, socketID) {
     let session = new GameSession();
     session.room = room;
     session.host = host;
 
-    let player = new Player();
-    player.session = session;
-    player.name = host;
-    player.socketID = socketID;
-    session.players.push(player);
+    createPlayer(session, host, socketID);
     sessions.push(session);
 }
 
 function joinGameSession(room, user, socketID) {
     let session = findGameSession(room);
-    let player = new Player();
-    player.session = session;
-    player.name = user;
-    player.socketID = socketID;
-    session.players.push(player);
+    let player = createPlayer(session, user, socketID);
+    return (player);
 }
-
-
-
-
-
-
-
-
 
 
 class pieceSquare {
@@ -298,7 +320,6 @@ class pieceZ {
         this.rotation = 0;
     }
 }
-
 
 
 exports.moveLeft = function(usernameAndRoom) {
@@ -377,7 +398,7 @@ function lineIsFilled(arr, len) {
     let i = 0;
 
     while (i < len) {
-        if (arr[i] === default_color)
+        if (arr[i] === default_color || arr[i] === disabledColor)
             return false;
         i += 1;
     }
@@ -394,31 +415,29 @@ function clearLine(arr, len) {
 }
 
 function collapseLines(i, playfield) {
-    let line = [color, color, color, color, color, color, color, color, color, color];
-    return playfield.map((item, index) => {
-        if (index === 0)
-            return [...line];
-        if (index <= i && index > 0) {
-            return playfield[index - 1];
-        } else {
-            return item;
+    for (row = i; row > 0; row--) {
+        for (column = 0; column < 10; column++) {
+            playfield[row][column] = playfield[row - 1][column];
         }
-    });
+    }
 }
 
 function removeFilledLines(playfield, currentTetromino) {
     let i = currentTetromino.position[1];
     let limit = i + 4;
+    let clearedLines = 0;
 
     while (i < limit) {
         if (playfield[i]) {
             if (lineIsFilled(playfield[i], 10)) {
                 clearLine(playfield[i], 10);
-                playfield = collapseLines(i, playfield);
+                collapseLines(i, playfield);
+                clearedLines++;
             }
         }
         i += 1;
     }
+    return (clearedLines);
 }
 
 let tetrominos = [pieceLine, pieceL, pieceReverseL, pieceSquare, pieceS, pieceZ, pieceT];
@@ -439,7 +458,7 @@ function joinTetris(client, hash, socketID) {
     console.log("joinTetris() called");
     console.log("User \"" + username + "\" tried to connect to room: \"" + room + "\"");
     let session = findGameSession(room);
-    if (session === false) {
+    if (!session) {
         console.log("Session not found, attempting to create a new session");
         createGameSession(room, username, socketID);
         session = findGameSession(room);
@@ -456,13 +475,13 @@ function joinTetris(client, hash, socketID) {
         user = findUserInSession(room, username);
         if (!user) {
             console.log("User \"" + username + "\" not found in session, adding...");
-            joinGameSession(room, username, socketID);
+            user = joinGameSession(room, username, socketID);
         }
         else {
             console.log("User \"" + username + "\" is already in session.");
         }
     }
-    setInterval(user.play, server.interval);
+    setInterval(()=> {user.play()}, server.interval);
 }
 
 exports.joinTetris = joinTetris;

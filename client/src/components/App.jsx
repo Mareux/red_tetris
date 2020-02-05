@@ -26,7 +26,8 @@ const App = () => {
                 || key === 'ArrowDown'
                 || key === 'ArrowLeft'
                 || key === 'ArrowRight') {
-                socket.emit(key, [clientData.userName, clientData.userRoom]);
+                console.log(clientData);
+                socket.emit(key, [clientData.username, clientData.room]);
             }
         };
 

@@ -4,7 +4,7 @@ const tetris = require('./tetris');
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-exports.interval = 300;
+exports.interval = 150;
 
 io.on('connection', (client) => {
     console.log("\nConnection happened.");
