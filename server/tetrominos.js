@@ -1,5 +1,13 @@
 
-exports.Line = [
+export const Square = [
+    [
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]];
+
+export const Line = [
     [
         [0, 1, 0, 0],
         [0, 1, 0, 0],
@@ -25,7 +33,7 @@ exports.Line = [
         [0, 0, 0, 0]
     ]];
 
-exports.T = [
+export const T = [
     [
         [0, 1, 0, 0],
         [1, 1, 1, 0],
@@ -51,7 +59,7 @@ exports.T = [
         [0, 0, 0, 0]
     ]];
 
-exports.L = [
+export const L = [
     [
         [0, 0, 1, 0],
         [1, 1, 1, 0],
@@ -77,7 +85,7 @@ exports.L = [
         [0, 0, 0, 0]
     ]];
 
-exports.ReverseL = [
+export const ReverseL = [
     [
         [1, 0, 0, 0],
         [1, 1, 1, 0],
@@ -103,7 +111,7 @@ exports.ReverseL = [
         [0, 0, 0, 0]
     ]];
 
-exports.S = [
+export const S = [
     [
         [0, 1, 1, 0],
         [1, 1, 0, 0],
@@ -129,7 +137,7 @@ exports.S = [
         [0, 0, 0, 0]
     ]];
 
-exports.Z = [
+export const Z = [
     [
         [1, 1, 0, 0],
         [0, 1, 1, 0],
