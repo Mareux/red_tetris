@@ -5,20 +5,13 @@ import {L, Line, ReverseL, S, Square, T, Z} from "./tetrominos";
 
 const autoBind = require('auto-bind');
 
-const default_color = 'gray';
+const defaultColor = 'gray';
 const disabledColor = 'pink';
 
-const color = default_color;
-
 export function createPlayfield() {
-    let line = [color, color, color, color, color, color, color, color, color, color];
-    return [[...line],
-        [...line],
-        [...line],
-        [...line],
-        [...line],
-        [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line], [...line],
-        [...line], [...line], [...line], [...line], [...line], [...line]];
+    return [...new Array(20)].map(() => {
+        return [...new Array(10)].map(() => defaultColor);
+    });
 }
 
 export function emitEvents(thisPlayer) {
@@ -27,31 +20,34 @@ export function emitEvents(thisPlayer) {
 
 class GameSession {
     constructor() {
+        autoBind(this);
         this.room = "";
         this.host = "";
         this.players = Array();
         this.tetrominos = Array(nextTetromino(), nextTetromino());
-        this.newTetromino = function () {
-            this.tetrominos.push(nextTetromino());
-        };
-        this.disableLines = function (user) {
-            this.players.forEach(function (element) {
-                if (element !== user) {
-                    element.disableLine();
-                }
-            });
-        }
+    }
+
+    newTetromino() {
+        this.tetrominos.push(nextTetromino());
+    }
+
+    disableLines(user) {
+        this.players.forEach(element => {
+            if (element !== user) {
+                element.disableLine();
+            }
+        });
     }
 }
 
-let sessions = Array();
+const sessions = Array();
 
 function findGameSession(room) {
     return sessions.find(element => element.room === room);
 }
 
 function findUserInSession(room, username) {
-    let session = findGameSession(room);
+    const session = findGameSession(room);
     if (!session)
         return;
 
@@ -59,11 +55,11 @@ function findUserInSession(room, username) {
 }
 
 export const copyTetromino = (tetromino) => {
-  return new Tetromino(tetromino.shape, tetromino.color, [0, -1], tetromino.rotationArray);
+    return new Tetromino(tetromino.shape, tetromino.color, [0, -1], tetromino.rotationArray);
 };
 
 function createPlayer(session, name, socketID) {
-    let player = new Player();
+    const player = new Player();
     player.session = session;
     player.name = name;
     player.socketID = socketID;
@@ -74,32 +70,33 @@ function createPlayer(session, name, socketID) {
 }
 
 function createGameSession(room, host, socketID) {
-    let session = new GameSession();
+    const session = new GameSession();
     session.room = room;
     session.host = host;
 
     createPlayer(session, host, socketID);
     sessions.push(session);
+
+    return session;
 }
 
 function joinGameSession(room, user, socketID) {
-    let session = findGameSession(room);
-    let player = createPlayer(session, user, socketID);
-    return (player);
+    const session = findGameSession(room);
+    return createPlayer(session, user, socketID);
 }
 
 export function moveLeft(usernameAndRoom) {
-    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.moveLeft();
 }
 
 export function moveRight(usernameAndRoom) {
-    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.moveRight();
 }
 
 export function rotateCurrentTetromino(usernameAndRoom) {
-    let player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.rotate();
 }
 
@@ -115,7 +112,7 @@ export function collisionDetected(playfield, currentTetromino) {
                     return true;
                 if (playfield[currentTetromino.position[1] + row]) {
                     if (playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column]) {
-                        if (playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column] !== default_color)
+                        if (playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column] !== defaultColor)
                             return true;
                     }
                 }
@@ -127,23 +124,13 @@ export function collisionDetected(playfield, currentTetromino) {
     return false;
 }
 
-function lineIsFilled(arr, len) {
-    let i = 0;
-
-    while (i < len) {
-        if (arr[i] === default_color || arr[i] === disabledColor)
-            return false;
-        i += 1;
-    }
-    return true;
+function lineIsFilled(line) {
+    return !line.some(cell => cell === defaultColor || cell === disabledColor);
 }
 
-function clearLine(arr, len) {
-    let i = 0;
-
-    while (i < len) {
-        arr[i] = default_color;
-        i += 1;
+function clearLine(line) {
+    for (let i = 0; i < line.length; i++) {
+        line[i] = defaultColor;
     }
 }
 
@@ -155,25 +142,25 @@ function collapseLines(i, playfield) {
     }
 }
 
-export function removeFilledLines(playfield, currentTetromino) {
-    let i = currentTetromino.position[1];
-    let limit = i + 4;
+export function clearFilledLines(playfield, currentTetromino) {
+    let currentLineIndex = currentTetromino.position[1];
+    const lastClearableLineIndex = currentLineIndex + 4;
     let clearedLines = 0;
 
-    while (i < limit) {
-        if (playfield[i]) {
-            if (lineIsFilled(playfield[i], 10)) {
-                clearLine(playfield[i], 10);
-                collapseLines(i, playfield);
+    while (currentLineIndex < lastClearableLineIndex) {
+        if (playfield[currentLineIndex]) {
+            if (lineIsFilled(playfield[currentLineIndex])) {
+                clearLine(playfield[currentLineIndex]);
+                collapseLines(currentLineIndex, playfield);
                 clearedLines++;
             }
         }
-        i += 1;
+        currentLineIndex += 1;
     }
     return (clearedLines);
 }
 
-let tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
+const tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
     new Tetromino(L[0], 'orange', [0, -1], L),
     new Tetromino(ReverseL[0], "blue", [0, -1], ReverseL),
     new Tetromino(Square[0], 'yellow', [0, -1], Square),
@@ -182,41 +169,54 @@ let tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
     new Tetromino(T[0], 'purple', [0, -1], T)];
 
 function nextTetromino() {
-    let index = Math.floor(Math.random() * tetrominos.length);
+    const index = Math.floor(Math.random() * tetrominos.length);
 
     return tetrominos[index];
 }
 
-export function joinTetris(hash, socketID) {
-    let split = hash.split('[');
-    let room, username, user;
-    room = split[0].slice(1);
-    if (split[1]) {
-        username = split[1].slice(0, split[1].length - 1);
-    }
-    console.log("joinTetris() called");
-    console.log("User \"" + username + "\" tried to connect to room: \"" + room + "\"");
-    let session = findGameSession(room);
-    if (!session) {
-        console.log("Session not found, attempting to create a new session");
-        createGameSession(room, username, socketID);
-        session = findGameSession(room);
-        if (!session) {
-            console.log("Failed to create a session.");
-        } else {
-            console.log("Session \"" + room + "\" successfully created with \"" + session.host + "\" as host.");
-        }
-        user = session.players[0];
+function createSessionWithUser(room, username, socketID) {
+    console.log("Session not found, attempting to create a new session");
+    const newSession = createGameSession(room, username, socketID);
+    if (!newSession) {
+        console.log("Failed to create a session.");
     } else {
-        console.log("Session found, attempting to join.");
-        user = findUserInSession(room, username);
-        if (!user) {
-            console.log("User \"" + username + "\" not found in session, adding...");
-            user = joinGameSession(room, username, socketID);
-        } else {
-            console.log("User \"" + username + "\" is already in session.");
-        }
+        console.log(`Session "${room}" successfully created with "${newSession.host}" as host.`);
     }
+    return newSession.players[0];
+}
+
+function getUser(room, username, socketID) {
+    if (!findGameSession(room))
+        return createSessionWithUser(room, username, socketID);
+
+    console.log("Session found, attempting to join.");
+    const user = findUserInSession(room, username);
+
+    if (!user) {
+        console.log(`User "${username}" not found in session, adding...`);
+        return joinGameSession(room, username, socketID);
+    } else {
+        console.log(`User "${username}" is already in session.`);
+    }
+
+    return user;
+}
+
+function parseUsername(split) {
+    return split[1]
+        ? split[1].slice(0, split[1].length - 1)
+        : undefined;
+}
+
+export function joinTetris(hash, socketID) {
+    const split = hash.split('[');
+    const room = split[0].slice(1);
+    const username = parseUsername(split);
+
+    console.log("joinTetris() called");
+    console.log(`User "${username}" tried to connect to room: "${room}"`);
+
+    const user = getUser(room, username, socketID);
     setInterval(() => {
         user.play()
     }, interval);

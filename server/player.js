@@ -1,5 +1,5 @@
 import {emit} from "./server";
-import {collisionDetected, copyTetromino, createPlayfield, emitEvents, removeFilledLines} from "./tetris";
+import {collisionDetected, copyTetromino, createPlayfield, emitEvents, clearFilledLines} from "./tetris";
 const autoBind = require('auto-bind');
 
 export default class Player {
@@ -22,7 +22,7 @@ export default class Player {
             if (collisionDetected(this.playfield, this.currentTetromino)) {
                 this.currentTetromino.position[1] -= 1;
                 this.currentTetromino.drawTetromino(this.playfield);
-                let clearedLines = removeFilledLines(this.playfield, this.currentTetromino);
+                let clearedLines = clearFilledLines(this.playfield, this.currentTetromino);
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
                 }
