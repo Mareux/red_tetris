@@ -1,4 +1,4 @@
-import {gameState, NEXT_FIGURE, SET_GAME_STATE, SET_PLAYFIELD} from "../actions/game";
+import {gameState, NEXT_TETROMINO, SET_GAME_STATE, SET_PLAYFIELD} from "../actions/game";
 
 function getClientData(hash) {
     if (!hash)
@@ -26,13 +26,17 @@ const INITIAL_STATE = {
     playfield: [...new Array(20)].map(() => {
         return [...new Array(10)].map(() => 'gray');
     }),
-    figure: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    nextTetromino: {
+        name: "",
+        shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+        color: 'gray',
+        position: [0, 0],
+        rotation: 0,
+    },
     currentFigure: {
         position: [0, 0],
         shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
     },
-
-    color: "gray"
 };
 //
 // function gameState(state = gameState.STARTING_SCREEN, action){
@@ -57,11 +61,10 @@ function gameReducer(state = INITIAL_STATE, action) {
                 ...state,
                 gameState: action.gameState
             };
-        case NEXT_FIGURE:
+        case NEXT_TETROMINO:
             return {
                 ...state,
-                figure: action.figure,
-                color: action.figure
+                nextTetromino: action.nextTetromino,
             };
         default:
             return state;

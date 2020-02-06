@@ -4,6 +4,7 @@ import GameContainer from "../containers/GameContainer";
 import io from 'socket.io-client';
 import Field from "./Field";
 import {useSelector} from "react-redux";
+import Next from "./Next";
 
 const App = () => {
     const clientData = useSelector(store => store.clientData);
@@ -26,7 +27,6 @@ const App = () => {
                 || key === 'ArrowDown'
                 || key === 'ArrowLeft'
                 || key === 'ArrowRight') {
-                console.log(clientData);
                 socket.emit(key, [clientData.username, clientData.room]);
             }
         };
@@ -42,6 +42,7 @@ const App = () => {
     return (
         <GameContainer
             field={<Field socket={socket}/>}
+            socket={socket}
         />
     );
 };

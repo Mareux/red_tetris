@@ -7,7 +7,6 @@ function useFieldSubscription(socket) {
     const playfield = useSelector(store => store.playfield);
 
     useEffect(() => {
-        console.log(socket);
         socket.on(SET_PLAYFIELD, setPlayfield(dispatch));//задиспачить экшн в стор
     }, [socket]);
 

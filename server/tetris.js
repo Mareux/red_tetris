@@ -25,7 +25,8 @@ function createPlayfield() {
 
 function emitEvents(thisPlayer) {
     server.emit('playfield', thisPlayer.playfield, thisPlayer.socketID);
-    server.emit('nextTetromino', thisPlayer.nextTetromino, thisPlayer.socketID);
+    if (thisPlayer.nextTetromino)
+        server.emit('nextTetromino', thisPlayer.nextTetromino, thisPlayer.socketID);
 }
 
 class Player {
@@ -56,7 +57,7 @@ class Player {
             } else
                 drawCurrentTetromino(this.playfield, this.currentTetromino);
         }
-        server.emit('playfield', this.playfield, this.socketID);
+        emitEvents(this);
     }
 
     newTetromino() {
