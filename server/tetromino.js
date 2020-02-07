@@ -44,31 +44,31 @@ export default class Tetromino {
     }
 
     moveLeft(playfield) {
-        this.eraseTetromino(playfield, this);
+        this.eraseTetromino(playfield.playfield, this);
         this.position[0] -= 1;
-        if (collisionDetected(playfield, this))
+        if (playfield.collisionDetected(this))
             this.position[0] += 1;
-        this.drawTetromino(playfield, this);
+        this.drawTetromino(playfield.playfield, this);
     };
 
     moveRight(playfield) {
-        this.eraseTetromino(playfield, this);
+        this.eraseTetromino(playfield.playfield, this);
         this.position[0] += 1;
-        if (collisionDetected(playfield, this))
+        if (playfield.collisionDetected(this))
             this.position[0] -= 1;
-        this.drawTetromino(playfield, this);
+        this.drawTetromino(playfield.playfield, this);
     };
 
     rotate(playfield) {
-        this.eraseTetromino(playfield, this);
+        this.eraseTetromino(playfield.playfield, this);
         if (this.rotationArray.indexOf(this.shape) === this.rotationArray.length - 1) {
             this.shape = this.rotationArray[0];
         } else {
             this.shape = this.rotationArray[this.rotationArray.indexOf(this.shape) + 1];
         }
-        if (collisionDetected(playfield, this))
+        if (playfield.collisionDetected(this))
             this._wallKick(playfield);
-        this.drawTetromino(playfield);
+        this.drawTetromino(playfield.playfield);
     }
 
     _wallKick(playfield) {
@@ -112,7 +112,7 @@ export default class Tetromino {
 
         this.position[0] = position[0];
         this.position[1] = position[1];
-        if (collisionDetected(playfield, this)) {
+        if (playfield.collisionDetected(this)) {
             this.position[0] = tmp[0];
             this.position[1] = tmp[1];
             return false;

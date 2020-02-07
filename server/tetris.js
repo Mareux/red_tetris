@@ -1,12 +1,12 @@
 import {emit, interval} from "./server";
-import Tetromino from "./tetrimino";
+import Tetromino from "./tetromino";
 import Player from "./player";
 import {L, Line, ReverseL, S, Square, T, Z} from "./tetrominos";
 
 const autoBind = require('auto-bind');
 
-const defaultColor = 'gray';
-const disabledColor = 'pink';
+export const defaultColor = 'gray';
+export const disabledColor = 'pink';
 
 export function createPlayfield() {
     return [...new Array(20)].map(() => {
@@ -15,7 +15,7 @@ export function createPlayfield() {
 }
 
 export function emitEvents(thisPlayer) {
-    emit('playfield', thisPlayer.playfield, thisPlayer.socketID);
+    emit('playfield', thisPlayer.playfield.playfield, thisPlayer.socketID);
 }
 
 class GameSession {
@@ -98,66 +98,6 @@ export function moveRight(usernameAndRoom) {
 export function rotateCurrentTetromino(usernameAndRoom) {
     const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.rotate();
-}
-
-export function collisionDetected(playfield, currentTetromino) {
-    let row = 0;
-    while (row < 4) {
-        let column = 0;
-        while (column < 4) {
-            if (currentTetromino.shape[row][column]) {
-                if (playfield.length - 1 < currentTetromino.position[1] + row || playfield[0].length - 1 < currentTetromino.position[0] + column)
-                    return true;
-                if (currentTetromino.position[0] + column < 0)
-                    return true;
-                if (playfield[currentTetromino.position[1] + row]) {
-                    if (playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column]) {
-                        if (playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column] !== defaultColor)
-                            return true;
-                    }
-                }
-            }
-            column += 1;
-        }
-        row += 1;
-    }
-    return false;
-}
-
-function lineIsFilled(line) {
-    return !line.some(cell => cell === defaultColor || cell === disabledColor);
-}
-
-function clearLine(line) {
-    for (let i = 0; i < line.length; i++) {
-        line[i] = defaultColor;
-    }
-}
-
-function collapseLines(i, playfield) {
-    for (let row = i; row > 0; row--) {
-        for (let column = 0; column < 10; column++) {
-            playfield[row][column] = playfield[row - 1][column];
-        }
-    }
-}
-
-export function clearFilledLines(playfield, currentTetromino) {
-    let currentLineIndex = currentTetromino.position[1];
-    const lastClearableLineIndex = currentLineIndex + 4;
-    let clearedLines = 0;
-
-    while (currentLineIndex < lastClearableLineIndex) {
-        if (playfield[currentLineIndex]) {
-            if (lineIsFilled(playfield[currentLineIndex])) {
-                clearLine(playfield[currentLineIndex]);
-                collapseLines(currentLineIndex, playfield);
-                clearedLines++;
-            }
-        }
-        currentLineIndex += 1;
-    }
-    return (clearedLines);
 }
 
 const tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),

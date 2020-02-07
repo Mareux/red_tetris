@@ -1,12 +1,13 @@
 import {emit} from "./server";
-import {collisionDetected, copyTetromino, createPlayfield, emitEvents, clearFilledLines} from "./tetris";
+import {copyTetromino, createPlayfield, emitEvents} from "./tetris";
+import Playfield from "./playfield";
 const autoBind = require('auto-bind');
 
 export default class Player {
     constructor() {
         autoBind(this);
         this.session = null;
-        this.playfield = createPlayfield();
+        this.playfield = new Playfield(createPlayfield());
         this.name = "";
         this.currentTetromino = null;
         this.nextTetromino = null;
@@ -17,18 +18,18 @@ export default class Player {
 
     play() {
         if (this.currentTetromino) {
-            this.currentTetromino.eraseTetromino(this.playfield);
+            this.currentTetromino.eraseTetromino(this.playfield.playfield);
             this.currentTetromino.position[1] += 1;
-            if (collisionDetected(this.playfield, this.currentTetromino)) {
+            if (this.playfield.collisionDetected(this.currentTetromino)) {
                 this.currentTetromino.position[1] -= 1;
-                this.currentTetromino.drawTetromino(this.playfield);
-                let clearedLines = clearFilledLines(this.playfield, this.currentTetromino);
+                this.currentTetromino.drawTetromino(this.playfield.playfield);
+                let clearedLines = this.playfield.clearFilledLines(this.currentTetromino);
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
                 }
                 this.newTetromino();
             } else
-                this.currentTetromino.drawTetromino(this.playfield);
+                this.currentTetromino.drawTetromino(this.playfield.playfield);
         }
         emitEvents(this);
     }
