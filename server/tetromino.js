@@ -1,4 +1,3 @@
-import {collisionDetected} from "./tetris";
 
 const autoBind = require('auto-bind');
 

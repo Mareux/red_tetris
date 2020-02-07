@@ -24,11 +24,11 @@ class GameSession {
         this.room = "";
         this.host = "";
         this.players = Array();
-        this.tetrominos = Array(nextTetromino(), nextTetromino());
+        this.tetrominos = Array(createTetromino(), createTetromino());
     }
 
     newTetromino() {
-        this.tetrominos.push(nextTetromino());
+        this.tetrominos.push(createTetromino());
     }
 
     disableLines(user) {
@@ -38,6 +38,20 @@ class GameSession {
             }
         });
     }
+}
+
+const tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
+    new Tetromino(L[0], 'orange', [0, -1], L),
+    new Tetromino(ReverseL[0], "blue", [0, -1], ReverseL),
+    new Tetromino(Square[0], 'yellow', [0, -1], Square),
+    new Tetromino(S[0], 'green', [0, -1], S),
+    new Tetromino(Z[0], 'red', [0, -1], Z),
+    new Tetromino(T[0], 'purple', [0, -1], T)];
+
+function createTetromino() {
+    const index = Math.floor(Math.random() * tetrominos.length);
+
+    return tetrominos[index];
 }
 
 const sessions = Array();
@@ -100,19 +114,7 @@ export function rotateCurrentTetromino(usernameAndRoom) {
     player.rotate();
 }
 
-const tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
-    new Tetromino(L[0], 'orange', [0, -1], L),
-    new Tetromino(ReverseL[0], "blue", [0, -1], ReverseL),
-    new Tetromino(Square[0], 'yellow', [0, -1], Square),
-    new Tetromino(S[0], 'green', [0, -1], S),
-    new Tetromino(Z[0], 'red', [0, -1], Z),
-    new Tetromino(T[0], 'purple', [0, -1], T)];
 
-function nextTetromino() {
-    const index = Math.floor(Math.random() * tetrominos.length);
-
-    return tetrominos[index];
-}
 
 function createSessionWithUser(room, username, socketID) {
     console.log("Session not found, attempting to create a new session");
