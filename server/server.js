@@ -1,34 +1,33 @@
-
-const tetris = require('./tetris');
+import {joinTetris, moveLeft, moveRight, rotateCurrentTetromino} from "./tetris";
 
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 
-exports.interval = 300;
+export let interval = 150;
 
 io.on('connection', (client) => {
     console.log("\nConnection happened.");
     client.on('Hash', function (string) {
-        tetris.joinTetris(client, string, client.id);
+        joinTetris(string, client.id);
     });
     client.on('ArrowUp', (usernameAndRoom) => {
-        tetris.rotateCurrentTetromino(usernameAndRoom);
+        rotateCurrentTetromino(usernameAndRoom);
     });
     client.on('ArrowDown', () => {
-        exports.interval = 50;
+        interval = 50;
     });
     client.on('ArrowDownUnpressed', () => {
-        exports.interval = 300;
+        interval = 300;
     });
     client.on('ArrowLeft', (usernameAndRoom) => {
-        tetris.moveLeft(usernameAndRoom);
+        moveLeft(usernameAndRoom);
     });
     client.on('ArrowRight', (usernameAndRoom) => {
-        tetris.moveRight(usernameAndRoom);
+        moveRight(usernameAndRoom);
     })
 });
 
-exports.emit = (event, args, socketID) => {
+export const emit = (event, args, socketID) => {
     io.to(`${socketID}`).emit(event, args);
 };
 

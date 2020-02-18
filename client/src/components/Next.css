@@ -7,8 +7,8 @@
 }
 
 .next_figure {
-    width: 150px;
-    height: 150px;
+    width: 125px;
+    height: auto;
     background-color: rgba(244, 240, 238, 0.98);
     border: 2px solid black;
     border-radius: 3px;
@@ -22,3 +22,4 @@
     font-weight: bold;
     text-align: center
 }
+

@@ -1,22 +1,71 @@
-import {gameState, NEXT_FIGURE, SET_GAME_STATE} from "../actions/game";
+import {gameState, NEXT_TETROMINO, SET_GAME_STATE, SET_PLAYFIELD} from "../actions/game";
+
+function getClientData(hash) {
+    if (!hash)
+        return {
+            username: "default",
+            room: "default",
+        };
+
+    let split = hash.split('[');
+    let room, username;
+    room = split[0].slice(1);
+    if (split[1]) {
+        username = split[1].slice(0, split[1].length - 1);
+    }
+
+    return {
+        username,
+        room,
+    }
+}
 
 const INITIAL_STATE = {
-  state: gameState.STARTING_SCREEN,
-  figure: [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
-  color: "gray"
+    clientData: getClientData(location.hash),
+    gameState: gameState.STARTING_SCREEN,
+    playfield: [...new Array(20)].map(() => {
+        return [...new Array(10)].map(() => 'gray');
+    }),
+    nextTetromino: {
+        name: "",
+        shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+        color: 'gray',
+        position: [0, 0],
+        rotation: 0,
+    },
+    currentFigure: {
+        position: [0, 0],
+        shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+    },
 };
+//
+// function gameState(state = gameState.STARTING_SCREEN, action){
+//     switch (action.type) {
+//         case SET_GAME_STATE:
+//             return action.state;
+//         default:
+//             return state;
+//
+//     }
+// }
 
 function gameReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
+        case SET_PLAYFIELD:
+            return {
+                ...state,
+                playfield: action.playfield,
+            };
         case SET_GAME_STATE:
-            return Object.assign({}, state, {
-                state: action.state
-            });
-        case NEXT_FIGURE:
-            return Object.assign({}, state, {
-                figure: action.figure,
-                color: action.figure
-            });
+            return {
+                ...state,
+                gameState: action.gameState
+            };
+        case NEXT_TETROMINO:
+            return {
+                ...state,
+                nextTetromino: action.nextTetromino,
+            };
         default:
             return state;
     }

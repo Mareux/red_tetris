@@ -1,23 +1,44 @@
 export const SET_GAME_STATE = 'SET_GAME_STATE';
-export const NEXT_FIGURE = 'NEXT_FIGURE';
+export const NEXT_TETROMINO = 'nextTetromino';
+export const CURRENT_FIGURE = 'CURRENT_FIGURE';
+
+export const SET_PLAYFIELD = 'playfield';
 
 export const gameState = {
-  STARTING_SCREEN: 'STARTING_SCREEN',
-  GAME_STARTED: 'GAME_STARTED',
-  GAME_FINISHED: 'GAME_FINISHED'
+    STARTING_SCREEN: 'STARTING_SCREEN',
+    GAME_STARTED: 'GAME_STARTED',
+    GAME_FINISHED: 'GAME_FINISHED'
 };
 
-export function setGameState(state) {
+export function setGameState(gameState) {
     return {
         type: SET_GAME_STATE,
-        state
+        gameState
     }
 }
 
-export function getNextFigure(figure, color) {
+export function nextFigure(dispatch) {
+    return (nextTetromino) => {
+        dispatch({
+            type: NEXT_TETROMINO,
+            nextTetromino,
+        })
+    }
+}
+
+export function currentFigure(figure, color) {
     return {
-        type: NEXT_FIGURE,
+        type: CURRENT_FIGURE,
         figure,
         color
+    }
+}
+
+export function setPlayfield(dispatch) {
+    return playfield => {
+        dispatch({
+            type: SET_PLAYFIELD,
+            playfield
+        });
     }
 }

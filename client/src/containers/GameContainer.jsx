@@ -11,7 +11,7 @@ function GameContainer(props) {
           <div className="field_container">
               {props.field}
           </div>
-          <Next/>
+          <Next socket={props.socket}/>
       </div>
     );
 }
