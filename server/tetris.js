@@ -18,6 +18,16 @@ export function emitEvents(thisPlayer) {
     emit('playfield', thisPlayer.playfield.playfield, thisPlayer.socketID);
 }
 
+export function emitPlayfield(thisPlayer) {
+    thisPlayer.currentTetromino.eraseTetromino(thisPlayer.playfield.playfield);
+    emit('playfield', thisPlayer.playfield.playfield, thisPlayer.socketID);
+    thisPlayer.currentTetromino.drawTetromino(thisPlayer.playfield.playfield);
+}
+
+export function emitTetromino(thisPlayer) {
+    emit('tetromino', thisPlayer.currentTetromino, thisPlayer.socketID);
+}
+
 class GameSession {
     constructor() {
         autoBind(this);

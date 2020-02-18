@@ -1,5 +1,5 @@
 import {emit} from "./server";
-import {copyTetromino, createPlayfield, emitEvents} from "./tetris";
+import {copyTetromino, createPlayfield, emitPlayfield, emitTetromino} from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require('auto-bind');
 
@@ -28,10 +28,11 @@ export default class Player {
                     this.session.disableLines(this);
                 }
                 this.newTetromino();
+                emitPlayfield(this);
             } else
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
         }
-        emitEvents(this);
+        emitTetromino(this);
     }
 
     newTetromino() {
@@ -45,17 +46,17 @@ export default class Player {
 
     rotate() {
         this.currentTetromino.rotate(this.playfield);
-        emitEvents(this);
+        emitTetromino(this);
     }
 
     moveLeft() {
         this.currentTetromino.moveLeft(this.playfield);
-        emitEvents(this);
+        emitTetromino(this);
     };
 
     moveRight() {
         this.currentTetromino.moveRight(this.playfield);
-        emitEvents(this);
+        emitTetromino(this);
     };
 
     disableLine() {
