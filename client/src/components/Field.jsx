@@ -1,19 +1,11 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import './Field.css'
-import useFieldSubscription from "../hooks/useFieldSubscription";
-import {useDispatch, useSelector} from "react-redux";
-import {CURRENT_TETROMINO, currentFigure} from "../actions/game";
+import {useSelector} from "react-redux";
 
-const Field = (props) => {
-    const field = useFieldSubscription(props.socket);
+const Field = () => {
 
-    const dispatch = useDispatch();
+    const field = useSelector(store => store.playfield);
     const current = useSelector(store => store.currentTetromino);
-
-    useEffect(() => {
-        props.socket.on(CURRENT_TETROMINO, currentFigure(dispatch));//задиспачить экшн в стор
-    }, [props.socket]);
-
 
     const drawTetromino = () => {
         const fieldCopy = field.map(row => row.map(column => column));

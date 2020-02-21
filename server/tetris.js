@@ -93,22 +93,15 @@ function createPlayer(session, name, socketID) {
     return player;
 }
 
-function createGameSession(room, host, socketID) {
+function createGameSession(room, host) {
     const session = new GameSession();
     session.room = room;
     session.host = host;
 
-    createPlayer(session, host, socketID);
     sessions.push(session);
 
     return session;
 }
-
-function joinGameSession(room, user, socketID) {
-    const session = findGameSession(room);
-    return createPlayer(session, user, socketID);
-}
-
 export function moveLeft(usernameAndRoom) {
     const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.moveLeft();
@@ -124,34 +117,19 @@ export function rotateCurrentTetromino(usernameAndRoom) {
     player.rotate();
 }
 
-
-
-function createSessionWithUser(room, username, socketID) {
-    console.log("Session not found, attempting to create a new session");
-    const newSession = createGameSession(room, username, socketID);
-    if (!newSession) {
-        console.log("Failed to create a session.");
-    } else {
-        console.log(`Session "${room}" successfully created with "${newSession.host}" as host.`);
-    }
-    return newSession.players[0];
-}
-
 function getUser(room, username, socketID) {
-    if (!findGameSession(room))
-        return createSessionWithUser(room, username, socketID);
+    const session = findGameSession(room) || createGameSession(room, username, socketID);
 
-    console.log("Session found, attempting to join.");
     const user = findUserInSession(room, username);
 
     if (!user) {
         console.log(`User "${username}" not found in session, adding...`);
-        return joinGameSession(room, username, socketID);
+        return createPlayer(session, username, socketID);
     } else {
         console.log(`User "${username}" is already in session.`);
+        user.socketID = socketID;
+        emitPlayfield(user);
     }
-
-    return user;
 }
 
 function parseUsername(split) {
@@ -170,6 +148,7 @@ export function joinTetris(hash, socketID) {
 
     const user = getUser(room, username, socketID);
     setInterval(() => {
-        user.play()
+        if (user)
+            user.play()
     }, interval);
 }

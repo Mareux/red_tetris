@@ -4,21 +4,17 @@ import GameContainer from "../containers/GameContainer";
 import io from 'socket.io-client';
 import Field from "./Field";
 import {useSelector} from "react-redux";
-import Next from "./Next";
+import useSocketDispatcher from "../hooks/useSocketDispatcher";
 
-const App = () => {
-    const clientData = useSelector(store => store.clientData);
-
-    const socket = useMemo(() => {
-        return io('http://localhost:8000')
-    }, []);
-
+function useHash(socket) {
     useEffect(() => {
         if (location.hash) {
             socket.emit("Hash", location.hash);
         }
     }, [socket]);
+}
 
+function useKeyHandlers(socket, clientData) {
     useEffect(() => {
         window.onkeydown = (event) => {
             const key = event.code;
@@ -38,12 +34,27 @@ const App = () => {
                 socket.emit(key + "Unpressed");
         };
     }, [socket]);
+}
+
+function useSocket() {
+    return useMemo(() => {
+        return io('http://localhost:8000')
+    }, []);
+}
+
+const App = () => {
+    const clientData = useSelector(store => store.clientData);
+
+    const socket = useSocket();
+
+    useSocketDispatcher(socket);
+
+    useHash(socket);
+
+    useKeyHandlers(socket, clientData);
 
     return (
-        <GameContainer
-            field={<Field socket={socket}/>}
-            socket={socket}
-        />
+        <GameContainer field={<Field/>}/>
     );
 };
 

@@ -2,7 +2,6 @@ import React from 'react'
 import './GameContainer.css'
 import Scoreboard from "../components/Scoreboard";
 import Next from "../components/Next";
-import Field from "../components/Field";
 
 function GameContainer(props) {
     return (
@@ -11,7 +10,7 @@ function GameContainer(props) {
           <div className="field_container">
               {props.field}
           </div>
-          <Next socket={props.socket}/>
+          <Next/>
       </div>
     );
 }
