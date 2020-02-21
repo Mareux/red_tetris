@@ -1,7 +1,11 @@
 import {joinTetris, moveLeft, moveRight, rotateCurrentTetromino} from "./tetris";
 
-const server = require('http').createServer();
-const io = require('socket.io')(server);
+const http = require('http');
+const Server = require('socket.io');
+const io = new Server(http,{
+    path:"../client/build",
+    serveClient: true
+});
 
 export let interval = 150;
 
@@ -36,5 +40,5 @@ const on = (event, callback, emit) => {
 };
 
 const port = 8000;
-server.listen(port);
+io.listen(port);
 console.log('listening on port ', port);
