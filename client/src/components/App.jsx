@@ -31,7 +31,7 @@ function useKeyHandlers(socket, clientData) {
             const key = event.code;
 
             if (key === "ArrowDown")
-                socket.emit(key + "Unpressed");
+                socket.emit(key + "Unpressed", [clientData.username, clientData.room]);
         };
     }, [socket]);
 }

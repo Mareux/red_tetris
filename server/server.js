@@ -1,4 +1,4 @@
-import {joinTetris, moveLeft, moveRight, rotateCurrentTetromino} from "./tetris";
+import {joinTetris, moveLeft, moveRight, rotateCurrentTetromino, setGameInterval} from "./tetris";
 
 const http = require('http');
 const Server = require('socket.io');
@@ -7,7 +7,7 @@ const io = new Server(http,{
     serveClient: true
 });
 
-export let interval = 150;
+export let interval = 300;
 
 io.on('connection', (client) => {
     console.log("\nConnection happened.");
@@ -17,11 +17,11 @@ io.on('connection', (client) => {
     client.on('ArrowUp', (usernameAndRoom) => {
         rotateCurrentTetromino(usernameAndRoom);
     });
-    client.on('ArrowDown', () => {
-        interval = 50;
+    client.on('ArrowDown', (usernameAndRoom) => {
+        setGameInterval(usernameAndRoom, 50);
     });
-    client.on('ArrowDownUnpressed', () => {
-        interval = 300;
+    client.on('ArrowDownUnpressed', (usernameAndRoom) => {
+        setGameInterval(usernameAndRoom, 300);
     });
     client.on('ArrowLeft', (usernameAndRoom) => {
         moveLeft(usernameAndRoom);

@@ -102,6 +102,12 @@ function createGameSession(room, host) {
 
     return session;
 }
+
+export function setGameInterval(usernameAndRoom, gameInterval) {
+    const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
+    player.interval = gameInterval;
+}
+
 export function moveLeft(usernameAndRoom) {
     const player = findUserInSession(usernameAndRoom[1], usernameAndRoom[0]);
     player.moveLeft();
@@ -147,7 +153,7 @@ export function joinTetris(hash, socketID) {
     console.log(`User "${username}" tried to connect to room: "${room}"`);
 
     const user = getUser(room, username, socketID);
-    setInterval(() => {
+    setTimeout(() => {
         if (user)
             user.play()
     }, interval);

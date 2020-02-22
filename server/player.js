@@ -14,6 +14,7 @@ export default class Player {
         this.nextTetrominoIndex = 0;
         this.socketID = false;
         this.tetrominos = null;
+        this.interval = 300;
     }
 
     play() {
@@ -33,6 +34,7 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
         }
         emitTetromino(this);
+        setTimeout(this.play, this.interval);
     }
 
     newTetromino() {
