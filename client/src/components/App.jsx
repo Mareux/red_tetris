@@ -38,7 +38,7 @@ function useKeyHandlers(socket, clientData) {
 
 function useSocket() {
     return useMemo(() => {
-        return io('http://localhost:8000')
+        return io('http://10.111.5.3:8000');
     }, []);
 }
 

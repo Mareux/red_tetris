@@ -1,5 +1,5 @@
 import {emit} from "./server";
-import {copyTetromino, createPlayfield, emitPlayfield, emitTetromino} from "./tetris";
+import {copyTetromino, createPlayfield, disabledColor, emitPlayfield, emitTetromino} from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require('auto-bind');
 
@@ -84,13 +84,17 @@ export default class Player {
     };
 
     disableLine() {
-        for (let row = 0; row < this.playfield.length - 1; row++) {
+        this.currentTetromino.eraseTetromino(this.playfield.playfield);
+        for (let row = 0; row < this.playfield.playfield.length - 1; row++) {
             for (let column = 0; column < 10; column++) {
-                this.playfield[row][column] = this.playfield[row + 1][column];
+                this.playfield.playfield[row][column] = this.playfield.playfield[row + 1][column];
             }
         }
         for (let column = 0; column < 10; column++) {
-            this.playfield[this.playfield.length - 1][column] = 'gray';
+             this.playfield.playfield[this.playfield.playfield.length - 1][column] = disabledColor;
         }
+        this.currentTetromino.position[1] -= 1;
+        this.currentTetromino.drawTetromino(this.playfield.playfield);
+        emitPlayfield(this);
     }
 }
