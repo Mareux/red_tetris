@@ -15,6 +15,7 @@ export default class Player {
         this.socketID = false;
         this.tetrominos = null;
         this.interval = 300;
+        this.gameOver = false;
     }
 
     play() {
@@ -24,6 +25,11 @@ export default class Player {
             if (this.playfield.collisionDetected(this.currentTetromino)) {
                 this.currentTetromino.position[1] -= 1;
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
+                if (this.currentTetromino.position[1] < 0) {
+                    this.gameOver = true;
+                    emit('gameOver', null, this.socketID);
+                    return ;
+                }
                 let clearedLines = this.playfield.clearFilledLines(this.currentTetromino);
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
@@ -47,16 +53,22 @@ export default class Player {
     }
 
     rotate() {
+        if (this.gameOver)
+            return;
         this.currentTetromino.rotate(this.playfield);
         emitTetromino(this);
     }
 
     moveLeft() {
+        if (this.gameOver)
+            return;
         this.currentTetromino.moveLeft(this.playfield);
         emitTetromino(this);
     };
 
     moveRight() {
+        if (this.gameOver)
+            return ;
         this.currentTetromino.moveRight(this.playfield);
         emitTetromino(this);
     };
