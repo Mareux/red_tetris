@@ -16,6 +16,8 @@ export default class Player {
         this.tetrominos = null;
         this.interval = 300;
         this.gameOver = false;
+        this.score = 0;
+        this.totalClearedLines = 0;
     }
 
     play() {
@@ -34,6 +36,7 @@ export default class Player {
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
                 }
+                this.increaseScore(clearedLines);
                 this.newTetromino();
                 emitPlayfield(this);
             } else
@@ -41,6 +44,13 @@ export default class Player {
         }
         emitTetromino(this);
         setTimeout(this.play, this.interval);
+    }
+
+    increaseScore(clearedLines) {
+        this.totalClearedLines = clearedLines;
+        this.score += clearedLines * (10 + (clearedLines - 1));
+        emit('score', this.score, this.socketID);
+        emit('clearedLines', this.totalClearedLines, this.socketID);
     }
 
     newTetromino() {
