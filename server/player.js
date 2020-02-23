@@ -29,7 +29,7 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
                 if (this.currentTetromino.position[1] < 0) {
                     this.gameOver = true;
-                    emit('gameOver', null, this.socketID);
+                    emit('gameOver', 'GAME_FINISHED', this.socketID);
                     return ;
                 }
                 let clearedLines = this.playfield.clearFilledLines(this.currentTetromino);
@@ -47,7 +47,7 @@ export default class Player {
     }
 
     increaseScore(clearedLines) {
-        this.totalClearedLines = clearedLines;
+        this.totalClearedLines += clearedLines;
         this.score += clearedLines * (10 + (clearedLines - 1));
         emit('score', this.score, this.socketID);
         emit('clearedLines', this.totalClearedLines, this.socketID);
