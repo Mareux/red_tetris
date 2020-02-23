@@ -1,6 +1,8 @@
 export const SET_GAME_STATE = 'SET_GAME_STATE';
 export const NEXT_TETROMINO = 'nextTetromino';
 export const CURRENT_TETROMINO = 'tetromino';
+export const SET_SCORE = 'score';
+export const SET_CLEARED_LINES = 'clearedLines';
 
 export const SET_PLAYFIELD = 'playfield';
 
@@ -10,10 +12,30 @@ export const gameState = {
     GAME_FINISHED: 'GAME_FINISHED'
 };
 
-export function setGameState(gameState) {
-    return {
-        type: SET_GAME_STATE,
-        gameState
+export function setScore(dispatch){
+    return (score) => {
+        dispatch({
+            type: SET_SCORE,
+            score
+        })
+    }
+}
+
+export function setClearedLines(dispatch){
+    return (clearedLines) => {
+        dispatch({
+            type: SET_CLEARED_LINES,
+            clearedLines
+        })
+    }
+}
+
+export function setGameState(dispatch) {
+    return (gameState) => {
+        dispatch({
+            type: SET_GAME_STATE,
+            gameState
+        })
     }
 }
 

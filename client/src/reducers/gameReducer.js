@@ -1,4 +1,12 @@
-import {CURRENT_TETROMINO, gameState, NEXT_TETROMINO, SET_GAME_STATE, SET_PLAYFIELD} from "../actions/game";
+import {
+    CURRENT_TETROMINO,
+    gameState,
+    NEXT_TETROMINO,
+    SET_CLEARED_LINES,
+    SET_GAME_STATE,
+    SET_PLAYFIELD,
+    SET_SCORE
+} from "../actions/game";
 
 function getClientData(hash) {
     if (!hash)
@@ -40,6 +48,8 @@ const INITIAL_STATE = {
         position: [0, 0],
         rotation: 0,
     },
+    score: 0,
+    clearedLines: 0,
 };
 //
 // function gameState(state = gameState.STARTING_SCREEN, action){
@@ -73,6 +83,16 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 currentTetromino: action.currentTetromino,
+            };
+        case SET_SCORE:
+            return {
+                ...state,
+                score: action.score,
+            };
+        case SET_CLEARED_LINES:
+            return {
+                ...state,
+                clearedLines: action.clearedLines,
             };
         default:
             return state;

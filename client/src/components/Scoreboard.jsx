@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
 import './Scoreboard.css'
+import {useSelector} from "react-redux";
 
 function Scoreboard() {
 
-    const [score, setScore] = useState("");
+    const score = useSelector(store => store.score);
     const [level, setLevel] = useState("");
-    const [lines, setLines] = useState("");
+    const lines = useSelector(store => store.clearedLines);
 
     return (
         <div className="board">
