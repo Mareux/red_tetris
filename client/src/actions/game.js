@@ -1,6 +1,6 @@
 export const SET_GAME_STATE = 'SET_GAME_STATE';
-export const NEXT_FIGURE = 'NEXT_FIGURE';
-export const CURRENT_FIGURE = 'CURRENT_FIGURE';
+export const NEXT_TETROMINO = 'nextTetromino';
+export const CURRENT_TETROMINO = 'tetromino';
 
 export const SET_PLAYFIELD = 'playfield';
 
@@ -17,19 +17,21 @@ export function setGameState(gameState) {
     }
 }
 
-export function nextFigure(figure, color) {
-    return {
-        type: NEXT_FIGURE,
-        figure,
-        color
+export function nextFigure(dispatch) {
+    return (nextTetromino) => {
+        dispatch({
+            type: NEXT_TETROMINO,
+            nextTetromino,
+        })
     }
 }
 
-export function currentFigure(figure, color) {
-    return {
-        type: CURRENT_FIGURE,
-        figure,
-        color
+export function currentFigure(dispatch) {
+    return (currentTetromino) => {
+        dispatch({
+            type: CURRENT_TETROMINO,
+            currentTetromino,
+        })
     }
 }
 

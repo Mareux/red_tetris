@@ -2,7 +2,6 @@ import React from 'react'
 import './GameContainer.css'
 import Scoreboard from "../components/Scoreboard";
 import Next from "../components/Next";
-import Field from "../components/Field";
 
 function GameContainer(props) {
     return (

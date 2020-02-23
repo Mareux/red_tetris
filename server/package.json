@@ -4,13 +4,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "rm -rf build && webpack --mode development --watch",
-    "start": "node build/server.js"
+    "start": "webpack --mode development && node build/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "auto-bind": "^4.0.0",
+    "babel": "^6.23.0",
     "express": "^4.17.1",
     "http": "0.0.0",
     "socket.io": "^2.3.0"

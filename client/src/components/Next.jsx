@@ -1,31 +1,26 @@
 import React from 'react'
 import './Next.css'
-import useFieldSubscription from "../hooks/useFieldSubscription";
+import {useSelector} from "react-redux";
 
-const figureInitialState = [[0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],];
-
-function Next(props) {
-
-    // const figure = useSubscription(props.socket,
-    //     "nextFigure", figureInitialState);
+function Next() {
+    const next = useSelector(store => store.nextTetromino);
 
     return (
         <div className="next">
-            {/*<p>Next</p>*/}
-            {/*<div className="next_figure">{*/}
-            {/*    figure.map((row) => <div>*/}
-            {/*        {*/}
-            {/*            row.map((column) =>*/}
-            {/*                <div*/}
-            {/*                    className={"column"}*/}
-            {/*                    style={{backgroundColor: "gray"}}*/}
-            {/*                />)*/}
-            {/*        }*/}
-            {/*    </div>)*/}
-            {/*}</div>*/}
+            <p>Next</p>
+            <div className="next_figure">
+                {next.shape.map((row) =>
+                    <div className={"row"}>
+                        {row.map((column) => {
+                            const color = !column ? 'gray' : next.color;
+                            return <div
+                                className={"column"}
+                                style={{backgroundColor: color}}
+                            />
+                        })}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
