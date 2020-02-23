@@ -50,13 +50,13 @@ class GameSession {
     }
 }
 
-const tetrominos = [new Tetromino(Line[0], 'cyan', [0, -1], Line),
-    new Tetromino(L[0], 'orange', [0, -1], L),
-    new Tetromino(ReverseL[0], "blue", [0, -1], ReverseL),
-    new Tetromino(Square[0], 'yellow', [0, -1], Square),
-    new Tetromino(S[0], 'green', [0, -1], S),
-    new Tetromino(Z[0], 'red', [0, -1], Z),
-    new Tetromino(T[0], 'purple', [0, -1], T)];
+const tetrominos = [new Tetromino(Line[0], 'cyan', [5, -2], Line),
+    new Tetromino(L[0], 'orange', [5, -2], L),
+    new Tetromino(ReverseL[0], "blue", [5, -2], ReverseL),
+    new Tetromino(Square[0], 'yellow', [5, -2], Square),
+    new Tetromino(S[0], 'green', [5, -2], S),
+    new Tetromino(Z[0], 'red', [5, -2], Z),
+    new Tetromino(T[0], 'purple', [5, -2], T)];
 
 function createTetromino() {
     const index = Math.floor(Math.random() * tetrominos.length);

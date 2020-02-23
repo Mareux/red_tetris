@@ -6,7 +6,7 @@ export default class Tetromino {
         autoBind(this);
         this.shape = shape;
         this.color = color;
-        this.position = position;
+        this.position = [3, -4];
         this.rotationArray = rotationArray;
     }
 
