@@ -29,6 +29,8 @@ function getClientData(hash) {
 }
 
 const INITIAL_STATE = {
+    menuState: false,
+    players: null,
     clientData: getClientData(location.hash),
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {

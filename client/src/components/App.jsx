@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import Field from "./Field";
 import {useSelector} from "react-redux";
 import useSocketDispatcher from "../hooks/useSocketDispatcher";
+import Menu from "./Menu";
 
 function useHash(socket) {
     useEffect(() => {
@@ -38,7 +39,7 @@ function useKeyHandlers(socket, clientData) {
 
 function useSocket() {
     return useMemo(() => {
-        return io('http://10.111.5.3:8000');
+        return io.connect('http://localhost:8080');
     }, []);
 }
 
@@ -54,7 +55,10 @@ const App = () => {
     useKeyHandlers(socket, clientData);
 
     return (
+        <>
+        <Menu socket={socket}/>
         <GameContainer field={<Field/>}/>
+        </>
     );
 };
 

@@ -50,8 +50,8 @@ const Field = () => {
     if (gameState === 'GAME_FINISHED') {
         // if (!gameOverAnimationStarted) {
         //     gameOverAnimationStarted = true;
-            playfield = fieldWithTetromino;
-            gameOverAnimation();
+        //     playfield = fieldWithTetromino;
+            // gameOverAnimation();
         // }
     }
 

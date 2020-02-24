@@ -1,17 +1,20 @@
 import {joinTetris, moveLeft, moveRight, rotateCurrentTetromino, setGameInterval} from "./tetris";
 
 const express = require('express');
-const path = require('path');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+const path = require('path');
+
+const port = 8080;
+
 app.use(express.static(path.join(__dirname, '../../client/build')));
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, '../../client/build', 'index.html'));
 });
-app.listen(8080);
 
-const http = require('http');
-const Server = require('socket.io');
-const io = new Server(http);
+server.listen(port);
 
 export let interval = 300;
 
@@ -44,7 +47,3 @@ export const emit = (event, args, socketID) => {
 const on = (event, callback, emit) => {
 
 };
-
-const port = 8000;
-io.listen(port);
-console.log('listening on port ', port);
