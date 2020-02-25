@@ -30,7 +30,16 @@ function getClientData(hash) {
 
 const INITIAL_STATE = {
     menuState: false,
-    players: null,
+    players: [{
+        username: getClientData(location.hash).username,
+        host: true,
+        ready: false,
+    }, {
+        username: "Masha",
+        host: false,
+        ready: true,
+    }],
+    host: true,
     clientData: getClientData(location.hash),
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {
@@ -53,16 +62,6 @@ const INITIAL_STATE = {
     score: 0,
     clearedLines: 0,
 };
-//
-// function gameState(state = gameState.STARTING_SCREEN, action){
-//     switch (action.type) {
-//         case SET_GAME_STATE:
-//             return action.state;
-//         default:
-//             return state;
-//
-//     }
-// }
 
 function gameReducer(state = INITIAL_STATE, action) {
     switch (action.type) {

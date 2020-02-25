@@ -20,6 +20,6 @@
     border: 2px solid black;
     border-radius: 3px;
     background-color: rgba(244, 240, 238, 0.98);
-    width: 150px;
+    width: auto;
     height: 20px;
 }
