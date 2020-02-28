@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "test": "jest --passWithNoTests",
     "start": "rm -rf build && webpack --mode development && node build/server.js"
   },
   "keywords": [],
@@ -19,9 +20,11 @@
   "devDependencies": {
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.6",
+    "@babel/preset-typescript": "^7.8.3",
     "babel-loader": "^8.0.6",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^25.1.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"

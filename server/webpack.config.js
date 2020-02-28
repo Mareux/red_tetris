@@ -13,6 +13,16 @@ module.exports = {
         publicPath: '/',
         filename: '[name].js',
     },
+    module: {
+        rules: [
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: ["babel-loader"]
+
+            },
+        ]
+    },
     target: 'node',
     node: {
         __dirname: false,

@@ -28,11 +28,21 @@ export function emitTetromino(thisPlayer) {
     emit('tetromino', thisPlayer.currentTetromino, thisPlayer.socketID);
 }
 
+function emitSession(thisPlayer) {
+
+}
+
+function initialPackage(thisPlayer) {
+    emitPlayfield(thisPlayer);
+    emitTetromino(thisPlayer);
+}
+
 class GameSession {
     constructor() {
         autoBind(this);
         this.room = "";
         this.host = "";
+        this.gameState = "STARTING_SCREEN";
         this.players = Array();
         this.tetrominos = Array(createTetromino(), createTetromino());
     }
@@ -134,11 +144,11 @@ function getUser(room, username, socketID) {
     } else {
         console.log(`User "${username}" is already in session.`);
         user.socketID = socketID;
-        emitPlayfield(user);
+        initialPackage(user);
     }
 }
 
-function parseUsername(split) {
+export function parseUsername(split) {
     return split[1]
         ? split[1].slice(0, split[1].length - 1)
         : undefined;
@@ -147,7 +157,9 @@ function parseUsername(split) {
 export function joinTetris(hash, socketID) {
     const split = hash.split('[');
     const room = split[0].slice(1);
+    console.log(split);
     const username = parseUsername(split);
+    console.log(username);
 
     console.log("joinTetris() called");
     console.log(`User "${username}" tried to connect to room: "${room}"`);

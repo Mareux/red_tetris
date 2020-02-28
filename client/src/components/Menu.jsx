@@ -38,11 +38,11 @@ const Menu = (props) => {
     };
 
     const handleReady = () => {
-        props.socket.emit('readyCheck', null);
+        props.socket.emit('readyCheck', clientData);
     };
 
     useEffect(() => {
-        if( gameState.GAME_FINISHED === state)
+        if (gameState.GAME_FINISHED === state)
             handleOpen();
     }, [state]);
 
@@ -86,7 +86,9 @@ const Menu = (props) => {
                     : gameState.GAME_FINISHED === state ? "Game over!" : "Pause"}</h2>
                 <h4>Room: {clientData.room}</h4>
                 <ListOfPlayers/>
-                {menuButtons()}
+                {
+                    menuButtons()
+                }
             </div>
         </Modal>
     );
