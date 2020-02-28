@@ -1,7 +1,13 @@
-import {emit} from "./server";
-import {copyTetromino, createPlayfield, disabledColor, emitPlayfield, emitTetromino} from "./tetris";
+import { emit } from "./server";
+import {
+    copyTetromino,
+    createPlayfield,
+    disabledColor,
+    emitPlayfield,
+    emitTetromino
+} from "./tetris";
 import Playfield from "./playfield";
-const autoBind = require('auto-bind');
+const autoBind = require("auto-bind");
 
 export default class Player {
     constructor() {
@@ -29,10 +35,12 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
                 if (this.currentTetromino.position[1] < 0) {
                     this.gameOver = true;
-                    emit('gameOver', 'GAME_FINISHED', this.socketID);
-                    return ;
+                    emit("gameOver", "GAME_FINISHED", this.socketID);
+                    return;
                 }
-                let clearedLines = this.playfield.clearFilledLines(this.currentTetromino);
+                let clearedLines = this.playfield.clearFilledLines(
+                    this.currentTetromino
+                );
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
                 }
@@ -49,8 +57,8 @@ export default class Player {
     increaseScore(clearedLines) {
         this.totalClearedLines += clearedLines;
         this.score += clearedLines * (10 + (clearedLines - 1));
-        emit('score', this.score, this.socketID);
-        emit('clearedLines', this.totalClearedLines, this.socketID);
+        emit("score", this.score, this.socketID);
+        emit("clearedLines", this.totalClearedLines, this.socketID);
     }
 
     newTetromino() {
@@ -58,40 +66,43 @@ export default class Player {
         this.nextTetrominoIndex++;
         if (!this.session.tetrominos[this.nextTetrominoIndex])
             this.session.newTetromino();
-        this.nextTetromino = copyTetromino(this.session.tetrominos[this.nextTetrominoIndex]);
-        emit('nextTetromino', this.nextTetromino, this.socketID);
+        this.nextTetromino = copyTetromino(
+            this.session.tetrominos[this.nextTetrominoIndex]
+        );
+        emit("nextTetromino", this.nextTetromino, this.socketID);
     }
 
     rotate() {
-        if (this.gameOver)
-            return;
+        if (this.gameOver) return;
         this.currentTetromino.rotate(this.playfield);
         emitTetromino(this);
     }
 
     moveLeft() {
-        if (this.gameOver)
-            return;
+        if (this.gameOver) return;
         this.currentTetromino.moveLeft(this.playfield);
         emitTetromino(this);
-    };
+    }
 
     moveRight() {
-        if (this.gameOver)
-            return ;
+        if (this.gameOver) return;
         this.currentTetromino.moveRight(this.playfield);
         emitTetromino(this);
-    };
+    }
 
     disableLine() {
         this.currentTetromino.eraseTetromino(this.playfield.playfield);
         for (let row = 0; row < this.playfield.playfield.length - 1; row++) {
             for (let column = 0; column < 10; column++) {
-                this.playfield.playfield[row][column] = this.playfield.playfield[row + 1][column];
+                this.playfield.playfield[row][
+                    column
+                ] = this.playfield.playfield[row + 1][column];
             }
         }
         for (let column = 0; column < 10; column++) {
-             this.playfield.playfield[this.playfield.playfield.length - 1][column] = disabledColor;
+            this.playfield.playfield[this.playfield.playfield.length - 1][
+                column
+            ] = disabledColor;
         }
         this.currentTetromino.position[1] -= 1;
         this.currentTetromino.drawTetromino(this.playfield.playfield);

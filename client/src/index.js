@@ -5,13 +5,17 @@ import App from './components/App';
 import {createStore} from "redux";
 import gameReducer from "./reducers/gameReducer";
 import {Provider} from "react-redux";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import 'typeface-roboto';
 
 const store = createStore(gameReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App/>
-    </Provider>,
+    <CssBaseline>
+        <Provider store={store}>
+            <App/>
+        </Provider>
+    </CssBaseline>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

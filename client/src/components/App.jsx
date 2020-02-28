@@ -1,9 +1,9 @@
-import React, {useMemo, useEffect} from 'react';
-import './App.css';
+import React, { useMemo, useEffect } from "react";
+import "./App.css";
 import GameContainer from "../containers/GameContainer";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import Field from "./Field";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import useSocketDispatcher from "../hooks/useSocketDispatcher";
 import Menu from "./Menu";
 
@@ -17,29 +17,34 @@ function useHash(socket) {
 
 function useKeyHandlers(socket, clientData) {
     useEffect(() => {
-        window.onkeydown = (event) => {
+        window.onkeydown = event => {
             const key = event.code;
 
-            if (key === 'ArrowUp'
-                || key === 'ArrowDown'
-                || key === 'ArrowLeft'
-                || key === 'ArrowRight') {
+            if (
+                key === "ArrowUp" ||
+                key === "ArrowDown" ||
+                key === "ArrowLeft" ||
+                key === "ArrowRight"
+            ) {
                 socket.emit(key, [clientData.username, clientData.room]);
             }
         };
 
-        window.onkeyup = (event) => {
+        window.onkeyup = event => {
             const key = event.code;
 
             if (key === "ArrowDown")
-                socket.emit(key + "Unpressed", [clientData.username, clientData.room]);
+                socket.emit(key + "Unpressed", [
+                    clientData.username,
+                    clientData.room
+                ]);
         };
     }, [socket]);
 }
 
 function useSocket() {
     return useMemo(() => {
-        return io.connect('http://localhost:8080');
+        return io.connect("http://localhost:8080");
     }, []);
 }
 
@@ -56,8 +61,8 @@ const App = () => {
 
     return (
         <>
-        <Menu socket={socket}/>
-        <GameContainer field={<Field/>}/>
+            <Menu socket={socket} />
+            <GameContainer field={<Field />} />
         </>
     );
 };

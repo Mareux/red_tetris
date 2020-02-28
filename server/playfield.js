@@ -1,5 +1,5 @@
 import autoBind from "auto-bind";
-import {defaultColor, disabledColor} from "./tetris";
+import { defaultColor, disabledColor } from "./tetris";
 
 export default class Playfield {
     constructor(playfield) {
@@ -13,13 +13,26 @@ export default class Playfield {
             let column = 0;
             while (column < 4) {
                 if (currentTetromino.shape[row][column]) {
-                    if (this.playfield.length - 1 < currentTetromino.position[1] + row || this.playfield[0].length - 1 < currentTetromino.position[0] + column)
+                    if (
+                        this.playfield.length - 1 <
+                            currentTetromino.position[1] + row ||
+                        this.playfield[0].length - 1 <
+                            currentTetromino.position[0] + column
+                    )
                         return true;
-                    if (currentTetromino.position[0] + column < 0)
-                        return true;
+                    if (currentTetromino.position[0] + column < 0) return true;
                     if (this.playfield[currentTetromino.position[1] + row]) {
-                        if (this.playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column]) {
-                            if (this.playfield[currentTetromino.position[1] + row][currentTetromino.position[0] + column] !== defaultColor)
+                        if (
+                            this.playfield[currentTetromino.position[1] + row][
+                                currentTetromino.position[0] + column
+                            ]
+                        ) {
+                            if (
+                                this.playfield[
+                                    currentTetromino.position[1] + row
+                                ][currentTetromino.position[0] + column] !==
+                                defaultColor
+                            )
                                 return true;
                         }
                     }
@@ -32,7 +45,9 @@ export default class Playfield {
     }
 
     lineIsFilled(line) {
-        return !line.some(cell => cell === defaultColor || cell === disabledColor);
+        return !line.some(
+            cell => cell === defaultColor || cell === disabledColor
+        );
     }
 
     clearLine(line) {
@@ -64,6 +79,6 @@ export default class Playfield {
             }
             currentLineIndex += 1;
         }
-        return (clearedLines);
+        return clearedLines;
     }
 }

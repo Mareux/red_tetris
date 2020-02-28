@@ -1,9 +1,8 @@
-import React, {useState} from 'react'
-import './Scoreboard.css'
-import {useSelector} from "react-redux";
+import React, { useState } from "react";
+import "./Scoreboard.css";
+import { useSelector } from "react-redux";
 
 function Scoreboard() {
-
     const score = useSelector(store => store.score);
     const [level, setLevel] = useState("");
     const lines = useSelector(store => store.clearedLines);
@@ -17,7 +16,7 @@ function Scoreboard() {
             <p>Lines</p>
             <div>{lines}</div>
         </div>
-    )
+    );
 }
 
 export default Scoreboard;

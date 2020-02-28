@@ -1,11 +1,11 @@
-
 export const Square = [
     [
         [1, 1, 0, 0],
         [1, 1, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const Line = [
     [
@@ -31,7 +31,8 @@ export const Line = [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const T = [
     [
@@ -57,7 +58,8 @@ export const T = [
         [1, 1, 0, 0],
         [0, 1, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const L = [
     [
@@ -83,7 +85,8 @@ export const L = [
         [0, 1, 0, 0],
         [0, 1, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const ReverseL = [
     [
@@ -109,7 +112,8 @@ export const ReverseL = [
         [0, 1, 0, 0],
         [1, 1, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const S = [
     [
@@ -135,7 +139,8 @@ export const S = [
         [1, 1, 0, 0],
         [0, 1, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];
 
 export const Z = [
     [
@@ -161,4 +166,5 @@ export const Z = [
         [1, 1, 0, 0],
         [1, 0, 0, 0],
         [0, 0, 0, 0]
-    ]];
+    ]
+];

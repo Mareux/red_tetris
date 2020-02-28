@@ -1,5 +1,4 @@
-
-const autoBind = require('auto-bind');
+const autoBind = require("auto-bind");
 
 export default class Tetromino {
     constructor(shape, color, position, rotationArray) {
@@ -16,8 +15,15 @@ export default class Tetromino {
             let column = 0;
             while (column < 4) {
                 if (playfield[this.position[1] + row]) {
-                    if (playfield[this.position[1] + row][this.position[0] + column] && this.shape[row][column]) {
-                        playfield[this.position[1] + row][this.position[0] + column] = this.color;
+                    if (
+                        playfield[this.position[1] + row][
+                            this.position[0] + column
+                        ] &&
+                        this.shape[row][column]
+                    ) {
+                        playfield[this.position[1] + row][
+                            this.position[0] + column
+                        ] = this.color;
                     }
                 }
                 column += 1;
@@ -32,8 +38,15 @@ export default class Tetromino {
             let column = 0;
             while (column < 4) {
                 if (playfield[this.position[1] + row]) {
-                    if (playfield[this.position[1] + row][this.position[0] + column] && this.shape[row][column]) {
-                        playfield[this.position[1] + row][this.position[0] + column] = 'gray';
+                    if (
+                        playfield[this.position[1] + row][
+                            this.position[0] + column
+                        ] &&
+                        this.shape[row][column]
+                    ) {
+                        playfield[this.position[1] + row][
+                            this.position[0] + column
+                        ] = "gray";
                     }
                 }
                 column += 1;
@@ -45,54 +58,96 @@ export default class Tetromino {
     moveLeft(playfield) {
         this.eraseTetromino(playfield.playfield, this);
         this.position[0] -= 1;
-        if (playfield.collisionDetected(this))
-            this.position[0] += 1;
+        if (playfield.collisionDetected(this)) this.position[0] += 1;
         this.drawTetromino(playfield.playfield, this);
-    };
+    }
 
     moveRight(playfield) {
         this.eraseTetromino(playfield.playfield, this);
         this.position[0] += 1;
-        if (playfield.collisionDetected(this))
-            this.position[0] -= 1;
+        if (playfield.collisionDetected(this)) this.position[0] -= 1;
         this.drawTetromino(playfield.playfield, this);
-    };
+    }
 
     rotate(playfield) {
         this.eraseTetromino(playfield.playfield, this);
-        if (this.rotationArray.indexOf(this.shape) === this.rotationArray.length - 1) {
+        if (
+            this.rotationArray.indexOf(this.shape) ===
+            this.rotationArray.length - 1
+        ) {
             this.shape = this.rotationArray[0];
         } else {
-            this.shape = this.rotationArray[this.rotationArray.indexOf(this.shape) + 1];
+            this.shape = this.rotationArray[
+                this.rotationArray.indexOf(this.shape) + 1
+            ];
         }
-        if (playfield.collisionDetected(this))
-            this._wallKick(playfield);
+        if (playfield.collisionDetected(this)) this._wallKick(playfield);
         this.drawTetromino(playfield.playfield);
     }
 
     _wallKick(playfield) {
-        if (this._tryTetrominoPosition([this.position[0] - 1, this.position[1]], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0] - 1, this.position[1]],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0] + 1, this.position[1]], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0] + 1, this.position[1]],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0], this.position[1] - 1], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0], this.position[1] - 1],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0], this.position[1] + 1], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0], this.position[1] + 1],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0] - 2, this.position[1]], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0] - 2, this.position[1]],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0] + 2, this.position[1]], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0] + 2, this.position[1]],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0], this.position[1] - 2], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0], this.position[1] - 2],
+                playfield
+            )
+        ) {
             return;
         }
-        if (this._tryTetrominoPosition([this.position[0], this.position[1] + 2], playfield)) {
+        if (
+            this._tryTetrominoPosition(
+                [this.position[0], this.position[1] + 2],
+                playfield
+            )
+        ) {
             return;
         }
         this._unrotate();
@@ -102,7 +157,9 @@ export default class Tetromino {
         if (this.rotationArray.indexOf(this.shape) < 1) {
             this.shape = this.rotationArray[this.rotationArray.length - 1];
         } else {
-            this.shape = this.rotationArray[this.rotationArray.indexOf(this.shape) - 1];
+            this.shape = this.rotationArray[
+                this.rotationArray.indexOf(this.shape) - 1
+            ];
         }
     }
 
@@ -118,5 +175,4 @@ export default class Tetromino {
         }
         return true;
     }
-
 }

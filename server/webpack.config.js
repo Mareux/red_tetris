@@ -1,17 +1,17 @@
-const path = require('path');
-const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+const path = require("path");
+const webpack = require("webpack");
+const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
-    mode: 'development',
+    mode: "development",
     entry: {
-        server: './server.js',
+        server: "./server.js"
     },
-    devtool: 'inline-source-map',
+    devtool: "inline-source-map",
     output: {
-        path: path.join(__dirname, 'build'),
-        publicPath: '/',
-        filename: '[name].js',
+        path: path.join(__dirname, "build"),
+        publicPath: "/",
+        filename: "[name].js"
     },
     module: {
         rules: [
@@ -19,14 +19,13 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: ["babel-loader"]
-
-            },
+            }
         ]
     },
-    target: 'node',
+    target: "node",
     node: {
         __dirname: false,
-        __filename: false,
+        __filename: false
     },
-    externals: [nodeExternals()],
+    externals: [nodeExternals()]
 };

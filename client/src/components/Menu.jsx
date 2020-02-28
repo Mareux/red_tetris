@@ -1,26 +1,22 @@
 import Modal from "@material-ui/core/Modal";
-import {useSelector} from "react-redux";
-import {gameState} from "../actions/game";
-import React, {useEffect, useState} from "react";
-import './Menu.css'
+import { useSelector } from "react-redux";
+import { gameState } from "../actions/game";
+import React, { useEffect, useState } from "react";
+import "./Menu.css";
 import Button from "@material-ui/core/Button";
 import ListOfPlayers from "./ListOfPlayers";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        '& > *': {
-            margin: theme.spacing(1),
-        },
-    },
-}));
-
-const Menu = (props) => {
+const Menu = props => {
     const state = useSelector(store => store.gameState);
     const clientData = useSelector(store => store.clientData);
     const host = useSelector(store => store.host);
-
-    const classes = useStyles();
 
     const [open, setOpen] = useState(true);
 
@@ -29,68 +25,62 @@ const Menu = (props) => {
     };
 
     const handleClose = () => {
-        setOpen(false);
+        if (state !== gameState.STARTING_SCREEN) setOpen(false);
     };
 
     const handleStart = () => {
-        props.socket.emit('startGame', null);
-        handleClose();
+        props.socket.emit("startGame", null);
+        setOpen(false);
     };
 
     const handleReady = () => {
-        props.socket.emit('readyCheck', clientData);
+        props.socket.emit("readyCheck", clientData);
     };
 
     useEffect(() => {
-        if (gameState.GAME_FINISHED === state)
-            handleOpen();
+        if (gameState.GAME_FINISHED === state) handleOpen();
     }, [state]);
 
     const menuButtons = () => {
         return (
-            <div className={classes.root}>
-                {!host ?
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleReady}
-                    >
+            <DialogActions>
+                {!host ? (
+                    <Button color="secondary" onClick={handleReady}>
                         READY
-                    </Button> :
+                    </Button>
+                ) : (
                     <>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleStart}
-                        >
+                        <Button color="primary" onClick={handleStart}>
                             START
                         </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={handleReady}
-                        >
+                        <Button color="secondary" onClick={handleReady}>
                             READY
                         </Button>
                     </>
-                }
-            </div>)
+                )}
+            </DialogActions>
+        );
     };
 
     return (
-        <Modal open={open}
-               onClose={handleClose}
-               disableBackdropClick={gameState.STARTING_SCREEN === state}>
-            <div className={"menu"}>
-                <h2>{gameState.STARTING_SCREEN === state ? "Starting screen"
-                    : gameState.GAME_FINISHED === state ? "Game over!" : "Pause"}</h2>
-                <h4>Room: {clientData.room}</h4>
-                <ListOfPlayers/>
-                {
-                    menuButtons()
-                }
-            </div>
-        </Modal>
+        <Dialog maxWidth="xs" fullWidth open={open} onClose={handleClose}>
+            <Toolbar style={{ paddingLeft: 0 }}>
+                <DialogTitle>
+                    {gameState.STARTING_SCREEN === state
+                        ? "Starting screen"
+                        : gameState.GAME_FINISHED === state
+                        ? "Game over!"
+                        : "Pause"}
+                </DialogTitle>
+                <div style={{ flexGrow: 1 }} />
+                <Typography variant="body2">Room: {clientData.room}</Typography>
+            </Toolbar>
+
+            <DialogContent>
+                <ListOfPlayers />
+            </DialogContent>
+            {menuButtons()}
+        </Dialog>
     );
 };
 
