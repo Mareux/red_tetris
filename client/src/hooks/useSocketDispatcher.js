@@ -18,6 +18,7 @@ function useSocketDispatcher(socket) {
         socket.on('gameOver', setGameState(dispatch));
         socket.on(SET_SCORE, setScore(dispatch));
         socket.on(SET_CLEARED_LINES, setClearedLines(dispatch));
+        socket.on('gameStarted', setGameState(dispatch));
     }, [socket]);
 }
 

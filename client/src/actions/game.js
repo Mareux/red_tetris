@@ -9,6 +9,7 @@ export const SET_PLAYFIELD = 'playfield';
 export const gameState = {
     STARTING_SCREEN: 'STARTING_SCREEN',
     GAME_STARTED: 'GAME_STARTED',
+    GAME_PAUSE: 'GAME_PAUSE',
     GAME_FINISHED: 'GAME_FINISHED'
 };
 

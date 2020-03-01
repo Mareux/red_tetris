@@ -4,7 +4,7 @@ import React from "react";
 import List from "@material-ui/core/List";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import GradeIcon from "@material-ui/icons/Grade";
-import "./ListOfPlayers.css";
+// import "./ListOfPlayers.css";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import Card from "@material-ui/core/Card";

@@ -30,7 +30,6 @@ const Menu = props => {
 
     const handleStart = () => {
         props.socket.emit("startGame", clientData);
-        setOpen(false);
     };
 
     const handleReady = () => {
@@ -41,12 +40,17 @@ const Menu = props => {
         if (gameState.GAME_FINISHED === state) handleOpen();
     }, [state]);
 
+    useEffect(() => {
+        if (state === gameState.GAME_STARTED)
+            handleClose();
+    }, [state]);
+
     const menuButtons = () => {
         return (
             <DialogActions>
                 {!host ? (
                     <Button color="secondary" onClick={handleReady}>
-                        READY
+                        {"READY"}
                     </Button>
                 ) : (
                     <>
@@ -54,7 +58,7 @@ const Menu = props => {
                             START
                         </Button>
                         <Button color="secondary" onClick={handleReady}>
-                            READY
+                            {"READY"}
                         </Button>
                     </>
                 )}
