@@ -3,7 +3,7 @@ import {
     gameState,
     NEXT_TETROMINO,
     SET_CLEARED_LINES,
-    SET_GAME_STATE,
+    SET_GAME_STATE, SET_HOST,
     SET_PLAYFIELD,
     SET_SCORE
 } from "../actions/game";
@@ -95,6 +95,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 clearedLines: action.clearedLines,
+            };
+        case SET_HOST:
+            return {
+                ...state,
+                host: action.host,
             };
         default:
             return state;
