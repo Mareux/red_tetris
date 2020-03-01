@@ -25,6 +25,7 @@ export default class Player {
         this.score = 0;
         this.totalClearedLines = 0;
         this.ready = true;
+        this.host = false;
     }
 
     play() {

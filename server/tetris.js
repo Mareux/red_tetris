@@ -34,6 +34,7 @@ function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
     emitReadyStates(thisPlayer.session);
+    emitHostStatus(thisPlayer);
 }
 
 class GameSession {
@@ -112,6 +113,7 @@ function createGameSession(room, host) {
     const session = new GameSession();
     session.room = room;
     session.host = host;
+    host.host = true;
 
     sessions.push(session);
 
@@ -158,6 +160,10 @@ export function parseUsername(split) {
     return split[1] ? split[1].slice(0, split[1].length - 1) : undefined;
 }
 
+function emitHostStatus(user) {
+    emit("isHost", user.host, user.socketID)
+}
+
 export function joinTetris(hash, socketID) {
     const split = hash.split("[");
     const room = split[0].slice(1);
@@ -166,10 +172,13 @@ export function joinTetris(hash, socketID) {
     console.log("joinTetris() called");
     console.log(`User "${username}" tried to connect to room: "${room}"`);
     getUser(room, username, socketID);
+
+    const user = findUserInSession(room, username);
+    emitHostStatus(user);
 }
 
 function readyCheck(session) {
-    return session.players.some(user =>  user.ready);
+    return session.players.every(user =>  user.ready);
 }
 
 function startGameForAllUsers(session,) {
@@ -202,6 +211,7 @@ export function toggleReady(clientData) {
         user.ready = false;
     else
         user.ready = true;
+    console.log(user.ready);
     const session = findGameSession(clientData.room);
     emitReadyStates(session);
 }
