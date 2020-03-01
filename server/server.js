@@ -45,7 +45,7 @@ io.on("connection", client => {
         moveRight(usernameAndRoom);
     });
     client.on("startGame", clientData => {
-       startGame(clientData, client.id);
+       startGame(clientData);
     });
 });
 

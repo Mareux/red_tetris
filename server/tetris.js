@@ -171,20 +171,20 @@ function readyCheck(session) {
     return session.players.some(user =>  user.ready);
 }
 
-function startGameForAllUsers(session, socketID) {
+function startGameForAllUsers(session,) {
     session.players.map(function (user) {
         setTimeout(() => {
             if (user) user.play();
         }, interval);
+        emit("gameStarted", "GAME_STARTED", user.socketID);
     });
-    emit("gameStarted", "GAME_STARTED", socketID);
 }
 
-export function startGame(clientData, socketID) {
+export function startGame(clientData) {
     const session = findGameSession(clientData.room);
     console.log("Function returns: ", readyCheck(session));
     if (readyCheck(session) === false)
         return;
     else
-        startGameForAllUsers(session, socketID);
+        startGameForAllUsers(session);
 }
