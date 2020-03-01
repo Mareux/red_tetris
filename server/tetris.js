@@ -198,8 +198,17 @@ export function startGame(clientData) {
 }
 
 function emitReadyStates(session) {
-    session.players.map(function (user) {
-        emit("readyState", user.ready, user.socketID);
+    const playerStates = Array();
+    session.players.forEach(function (user) {
+        const readyState = {
+            username: user.name,
+            ready: user.ready
+        };
+        playerStates.push(readyState);
+    });
+    console.log(playerStates);
+    session.players.forEach(function (user) {
+        emit("readyState", playerStates, user.socketID);
     });
 }
 
