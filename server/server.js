@@ -3,7 +3,7 @@ import {
     moveLeft,
     moveRight,
     rotateCurrentTetromino,
-    setGameInterval
+    setGameInterval, startGame
 } from "./tetris";
 
 const express = require("express");
@@ -43,6 +43,9 @@ io.on("connection", client => {
     });
     client.on("ArrowRight", usernameAndRoom => {
         moveRight(usernameAndRoom);
+    });
+    client.on("startGame", clientData => {
+       startGame(clientData, client.id);
     });
 });
 

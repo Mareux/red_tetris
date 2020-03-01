@@ -29,7 +29,7 @@ const Menu = props => {
     };
 
     const handleStart = () => {
-        props.socket.emit("startGame", null);
+        props.socket.emit("startGame", clientData);
         setOpen(false);
     };
 

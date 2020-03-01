@@ -164,9 +164,27 @@ export function joinTetris(hash, socketID) {
 
     console.log("joinTetris() called");
     console.log(`User "${username}" tried to connect to room: "${room}"`);
+    getUser(room, username, socketID);
+}
 
-    const user = getUser(room, username, socketID);
-    setTimeout(() => {
-        if (user) user.play();
-    }, interval);
+function readyCheck(session) {
+    return session.players.some(user =>  user.ready);
+}
+
+function startGameForAllUsers(session, socketID) {
+    session.players.map(function (user) {
+        setTimeout(() => {
+            if (user) user.play();
+        }, interval);
+    });
+    emit("gameStarted", "GAME_STARTED", socketID);
+}
+
+export function startGame(clientData, socketID) {
+    const session = findGameSession(clientData.room);
+    console.log("Function returns: ", readyCheck(session));
+    if (readyCheck(session) === false)
+        return;
+    else
+        startGameForAllUsers(session, socketID);
 }

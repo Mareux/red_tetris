@@ -24,6 +24,7 @@ export default class Player {
         this.gameOver = false;
         this.score = 0;
         this.totalClearedLines = 0;
+        this.ready = true;
     }
 
     play() {
