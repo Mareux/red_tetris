@@ -33,6 +33,7 @@ function emitSession(thisPlayer) {}
 function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
+    emitReadyStates(thisPlayer.session);
 }
 
 class GameSession {
@@ -187,4 +188,20 @@ export function startGame(clientData) {
         return;
     else
         startGameForAllUsers(session);
+}
+
+function emitReadyStates(session) {
+    session.players.map(function (user) {
+        emit("readyState", user.ready, user.socketID);
+    });
+}
+
+export function toggleReady(clientData) {
+    const user = findUserInSession(clientData.room, clientData.username);
+    if (user.ready)
+        user.ready = false;
+    else
+        user.ready = true;
+    const session = findGameSession(clientData.room);
+    emitReadyStates(session);
 }
