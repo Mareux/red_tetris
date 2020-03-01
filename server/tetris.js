@@ -202,7 +202,8 @@ function emitReadyStates(session) {
     session.players.forEach(function (user) {
         const readyState = {
             username: user.name,
-            ready: user.ready
+            ready: user.ready,
+            host: user.host
         };
         playerStates.push(readyState);
     });
