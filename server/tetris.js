@@ -21,6 +21,17 @@ export function emitEvents(thisPlayer) {
 export function emitPlayfield(thisPlayer) {
     thisPlayer.currentTetromino.eraseTetromino(thisPlayer.playfield.playfield);
     emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
+
+    sessions.players.forEach(function (user) {
+       if (user !== thisPlayer) {
+           const enemyPlayfield = {
+               username: thisPlayer.name,
+               playfield: thisPlayer.playfield.playfield
+           };
+           emit("enemyPlayfield", enemyPlayfield, user.socketID);
+       }
+    });
+
     thisPlayer.currentTetromino.drawTetromino(thisPlayer.playfield.playfield);
 }
 
