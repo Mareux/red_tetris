@@ -113,8 +113,6 @@ function createGameSession(room, host) {
     const session = new GameSession();
     session.room = room;
     session.host = host;
-    host.host = true;
-
     sessions.push(session);
 
     return session;
@@ -142,7 +140,7 @@ export function rotateCurrentTetromino(usernameAndRoom) {
 
 function getUser(room, username, socketID) {
     const session =
-        findGameSession(room) || createGameSession(room, username, socketID);
+        findGameSession(room) || createGameSession(room, username);
 
     const user = findUserInSession(room, username);
 
@@ -161,7 +159,7 @@ export function parseUsername(split) {
 }
 
 function emitHostStatus(user) {
-    emit("isHost", user.host, user.socketID)
+    emit("isHost", user.session.host === user.name, user.socketID)
 }
 
 export function joinTetris(hash, socketID) {
