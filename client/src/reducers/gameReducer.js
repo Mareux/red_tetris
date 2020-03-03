@@ -55,6 +55,7 @@ const INITIAL_STATE = {
         position: [0, 0],
         rotation: 0,
     },
+    enemyPlayfields: null,
     score: 0,
     clearedLines: 0,
 };

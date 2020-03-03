@@ -39,12 +39,16 @@ export function emitTetromino(thisPlayer) {
     emit("tetromino", thisPlayer.currentTetromino, thisPlayer.socketID);
 }
 
+export function emitSessionState(user){
+    emit("gameState", user.session.gameState, user.socketID)
+}
 
 function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
     emitReadyStates(thisPlayer.session);
     emitHostStatus(thisPlayer);
+    emitSessionState(thisPlayer);
 }
 
 class GameSession {
@@ -159,7 +163,6 @@ function getUser(room, username, socketID) {
     } else {
         console.log(`User "${username}" is already in session.`);
         user.socketID = socketID;
-        initialPackage(user);
     }
 }
 
@@ -181,8 +184,7 @@ export function joinTetris(hash, socketID) {
     getUser(room, username, socketID);
 
     const user = findUserInSession(room, username);
-    emitHostStatus(user);
-    emitReadyStates(user.session);
+    initialPackage(user);
 }
 
 function readyCheck(session) {
@@ -194,7 +196,8 @@ function startGameForAllUsers(session) {
         setTimeout(() => {
             if (user) user.play();
         }, interval);
-        emit("gameStarted", "GAME_STARTED", user.socketID);
+        session.gameState = "GAME_STARTED";
+        emitSessionState(user);
     });
 }
 

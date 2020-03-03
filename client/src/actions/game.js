@@ -1,4 +1,4 @@
-export const SET_GAME_STATE = 'SET_GAME_STATE';
+export const SET_GAME_STATE = 'gameState';
 export const NEXT_TETROMINO = 'nextTetromino';
 export const CURRENT_TETROMINO = 'tetromino';
 export const SET_SCORE = 'score';

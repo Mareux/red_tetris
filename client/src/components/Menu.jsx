@@ -11,19 +11,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-const getCurrentUserState = (username) => {
-    const players = useSelector(store => store.players);
-
-    return players.find(user => user.username === username).ready;
-};
-
 const Menu = props => {
     const state = useSelector(store => store.gameState);
     const clientData = useSelector(store => store.clientData);
     const host = useSelector(store => store.host);
     const players = useSelector(store => store.players);
 
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(state === gameState.STARTING_SCREEN);
 
     const handleOpen = () => {
         setOpen(true);

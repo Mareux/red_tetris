@@ -3,7 +3,7 @@ import {
     copyTetromino,
     createPlayfield,
     disabledColor,
-    emitPlayfield,
+    emitPlayfield, emitSessionState,
     emitTetromino
 } from "./tetris";
 import Playfield from "./playfield";
@@ -37,7 +37,8 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
                 if (this.currentTetromino.position[1] < 0) {
                     this.gameOver = true;
-                    emit("gameOver", "GAME_FINISHED", this.socketID);
+                    this.session.gameState = "GAME_FINISHED";
+                    emitSessionState(this);
                     return;
                 }
                 let clearedLines = this.playfield.clearFilledLines(
