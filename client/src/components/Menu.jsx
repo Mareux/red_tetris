@@ -1,11 +1,9 @@
-import Modal from "@material-ui/core/Modal";
 import { useSelector } from "react-redux";
 import { gameState } from "../actions/game";
 import React, { useEffect, useState } from "react";
 import "./Menu.css";
 import Button from "@material-ui/core/Button";
 import ListOfPlayers from "./ListOfPlayers";
-import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -13,10 +11,17 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
+const getCurrentUserState = (username) => {
+    const players = useSelector(store => store.players);
+
+    return players.find(user => user.username === username).ready;
+};
+
 const Menu = props => {
     const state = useSelector(store => store.gameState);
     const clientData = useSelector(store => store.clientData);
     const host = useSelector(store => store.host);
+    const players = useSelector(store => store.players);
 
     const [open, setOpen] = useState(true);
 
@@ -46,11 +51,13 @@ const Menu = props => {
     }, [state]);
 
     const menuButtons = () => {
+        const ready = players.find(user => user.username === clientData.username).ready;
+
         return (
             <DialogActions>
                 {!host ? (
                     <Button color="secondary" onClick={handleReady}>
-                        {"READY"}
+                        {!ready ? "READY" : "UNREADY"}
                     </Button>
                 ) : (
                     <>
@@ -58,7 +65,7 @@ const Menu = props => {
                             START
                         </Button>
                         <Button color="secondary" onClick={handleReady}>
-                            {"READY"}
+                            {!ready ? "READY" : "UNREADY"}
                         </Button>
                     </>
                 )}

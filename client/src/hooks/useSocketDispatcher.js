@@ -4,7 +4,7 @@ import {
     CURRENT_TETROMINO,
     currentFigure,
     NEXT_TETROMINO,
-    nextFigure, SET_CLEARED_LINES, SET_HOST,
+    nextFigure, READY_STATE, readyState, SET_CLEARED_LINES, SET_HOST,
     SET_PLAYFIELD, SET_SCORE, setClearedLines, setGameState, setHost,
     setPlayfield, setScore
 } from "../actions/game";
@@ -20,6 +20,7 @@ function useSocketDispatcher(socket) {
         socket.on(SET_CLEARED_LINES, setClearedLines(dispatch));
         socket.on('gameStarted', setGameState(dispatch));
         socket.on(SET_HOST, setHost(dispatch));
+        socket.on(READY_STATE, readyState(dispatch));
     }, [socket]);
 }
 

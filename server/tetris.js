@@ -22,15 +22,15 @@ export function emitPlayfield(thisPlayer) {
     thisPlayer.currentTetromino.eraseTetromino(thisPlayer.playfield.playfield);
     emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
 
-    sessions.players.forEach(function (user) {
-       if (user !== thisPlayer) {
-           const enemyPlayfield = {
-               username: thisPlayer.name,
-               playfield: thisPlayer.playfield.playfield
-           };
-           emit("enemyPlayfield", enemyPlayfield, user.socketID);
-       }
-    });
+    // sessions.players.forEach(function(user) {
+    //     if (user !== thisPlayer) {
+    //         const enemyPlayfield = {
+    //             username: thisPlayer.name,
+    //             playfield: thisPlayer.playfield.playfield
+    //         };
+    //         emit("enemyPlayfield", enemyPlayfield, user.socketID);
+    //     }
+    // });
 
     thisPlayer.currentTetromino.drawTetromino(thisPlayer.playfield.playfield);
 }
@@ -39,7 +39,6 @@ export function emitTetromino(thisPlayer) {
     emit("tetromino", thisPlayer.currentTetromino, thisPlayer.socketID);
 }
 
-function emitSession(thisPlayer) {}
 
 function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
@@ -150,8 +149,7 @@ export function rotateCurrentTetromino(usernameAndRoom) {
 }
 
 function getUser(room, username, socketID) {
-    const session =
-        findGameSession(room) || createGameSession(room, username);
+    const session = findGameSession(room) || createGameSession(room, username);
 
     const user = findUserInSession(room, username);
 
@@ -170,7 +168,7 @@ export function parseUsername(split) {
 }
 
 function emitHostStatus(user) {
-    emit("isHost", user.session.host === user.name, user.socketID)
+    emit("isHost", user.session.host === user.name, user.socketID);
 }
 
 export function joinTetris(hash, socketID) {
@@ -184,14 +182,15 @@ export function joinTetris(hash, socketID) {
 
     const user = findUserInSession(room, username);
     emitHostStatus(user);
+    emitReadyStates(user.session);
 }
 
 function readyCheck(session) {
-    return session.players.every(user =>  user.ready);
+    return session.players.every(user => user.ready);
 }
 
-function startGameForAllUsers(session,) {
-    session.players.map(function (user) {
+function startGameForAllUsers(session) {
+    session.players.map(function(user) {
         setTimeout(() => {
             if (user) user.play();
         }, interval);
@@ -202,15 +201,12 @@ function startGameForAllUsers(session,) {
 export function startGame(clientData) {
     const session = findGameSession(clientData.room);
     console.log("Function returns: ", readyCheck(session));
-    if (readyCheck(session) === false)
-        return;
-    else
-        startGameForAllUsers(session);
+    if (readyCheck(session) !== false) startGameForAllUsers(session);
 }
 
 function emitReadyStates(session) {
     const playerStates = Array();
-    session.players.forEach(function (user) {
+    session.players.forEach(function(user) {
         const readyState = {
             username: user.name,
             ready: user.ready,
@@ -219,17 +215,14 @@ function emitReadyStates(session) {
         playerStates.push(readyState);
     });
     console.log(playerStates);
-    session.players.forEach(function (user) {
+    session.players.forEach(function(user) {
         emit("readyState", playerStates, user.socketID);
     });
 }
 
 export function toggleReady(clientData) {
     const user = findUserInSession(clientData.room, clientData.username);
-    if (user.ready)
-        user.ready = false;
-    else
-        user.ready = true;
+    user.ready = !user.ready;
     console.log(user.ready);
     const session = findGameSession(clientData.room);
     emitReadyStates(session);

@@ -1,7 +1,7 @@
 import {
     CURRENT_TETROMINO,
     gameState,
-    NEXT_TETROMINO,
+    NEXT_TETROMINO, READY_STATE,
     SET_CLEARED_LINES,
     SET_GAME_STATE, SET_HOST,
     SET_PLAYFIELD,
@@ -33,15 +33,10 @@ const INITIAL_STATE = {
     menuState: false,
     players: [{
         username: getClientData(location.hash).username,
-        host: true,
-        ready: false,
-    }, {
-        username: "Masha",
         host: false,
-        ready: true,
+        ready: false,
     }],
     host: true,
-    ready: false,
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {
         return [...new Array(10)].map(() => 'gray');
@@ -100,6 +95,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 host: action.host,
+            };
+        case READY_STATE:
+            return {
+                ...state,
+                players: action.players,
             };
         default:
             return state;

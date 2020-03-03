@@ -4,6 +4,7 @@ export const CURRENT_TETROMINO = 'tetromino';
 export const SET_SCORE = 'score';
 export const SET_CLEARED_LINES = 'clearedLines';
 export const SET_HOST = 'isHost';
+export const READY_STATE = 'readyState';
 
 export const SET_PLAYFIELD = 'playfield';
 
@@ -13,6 +14,15 @@ export const gameState = {
     GAME_PAUSE: 'GAME_PAUSE',
     GAME_FINISHED: 'GAME_FINISHED'
 };
+
+export function readyState(dispatch) {
+    return (players) => {
+        dispatch({
+            type: READY_STATE,
+            players
+        })
+    }
+}
 
 export function setHost(dispatch) {
     return (host) => {
