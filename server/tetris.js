@@ -39,8 +39,8 @@ export function emitTetromino(thisPlayer) {
     emit("tetromino", thisPlayer.currentTetromino, thisPlayer.socketID);
 }
 
-export function emitSessionState(user){
-    emit("gameState", user.session.gameState, user.socketID)
+export function emitSessionState(user) {
+    emit("gameState", user.session.gameState, user.socketID);
 }
 
 function initialPackage(thisPlayer) {
@@ -117,6 +117,7 @@ function createPlayer(session, name, socketID) {
     player.session = session;
     player.name = name;
     player.socketID = socketID;
+    player.host = name === session.host;
     session.players.push(player);
     player.currentTetromino = copyTetromino(session.tetrominos[0]);
     player.nextTetromino = copyTetromino(session.tetrominos[1]);
@@ -196,15 +197,17 @@ function startGameForAllUsers(session) {
         setTimeout(() => {
             if (user) user.play();
         }, interval);
-        session.gameState = "GAME_STARTED";
+        if (session.gameState !== "GAME_STARTED")
+            session.gameState = "GAME_STARTED";
         emitSessionState(user);
     });
 }
 
 export function startGame(clientData) {
     const session = findGameSession(clientData.room);
-    console.log("Function returns: ", readyCheck(session));
-    if (readyCheck(session) !== false) startGameForAllUsers(session);
+
+    if (readyCheck(session) !== false && session.gameState !== "GAME_STARTED")
+        startGameForAllUsers(session);
 }
 
 function emitReadyStates(session) {

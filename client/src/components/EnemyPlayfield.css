@@ -1,0 +1,9 @@
+.enemyPlayfield {
+    margin: 0 10px 10px 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.enemyPlayfield .column {
+    width: 15px;
+    height: 15px;
+}

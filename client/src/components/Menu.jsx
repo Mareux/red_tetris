@@ -40,12 +40,13 @@ const Menu = props => {
     }, [state]);
 
     useEffect(() => {
-        if (state === gameState.GAME_STARTED)
-            handleClose();
+        if (state === gameState.GAME_STARTED) handleClose();
     }, [state]);
 
     const menuButtons = () => {
-        const ready = players.find(user => user.username === clientData.username).ready;
+        const ready = players.find(
+            user => user.username === clientData.username
+        ).ready;
 
         return (
             <DialogActions>
@@ -56,7 +57,11 @@ const Menu = props => {
                 ) : (
                     <>
                         <Button color="primary" onClick={handleStart}>
-                            START
+                            {state === gameState.STARTING_SCREEN
+                                ? "START"
+                                : state === gameState.GAME_FINISHED
+                                ? "RESTART"
+                                : "RETURN"}
                         </Button>
                         <Button color="secondary" onClick={handleReady}>
                             {!ready ? "READY" : "UNREADY"}

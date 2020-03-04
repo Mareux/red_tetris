@@ -1,7 +1,6 @@
 import React from "react";
 import "./Field.css";
 import { useSelector } from "react-redux";
-import { gameState } from "../actions/game";
 
 let gameOverAnimationStarted = false;
 let currentCell = [0, 0];

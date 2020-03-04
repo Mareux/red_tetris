@@ -1,6 +1,7 @@
 import React from 'react'
 import './GameContainer.css'
 import LeftSide from "./LeftSide";
+import RightSide from "./RightSide";
 
 function GameContainer(props) {
     return (
@@ -9,6 +10,7 @@ function GameContainer(props) {
           <div className="field_container">
               {props.field}
           </div>
+          <RightSide/>
       </div>
     );
 }

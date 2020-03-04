@@ -1,5 +1,5 @@
 import {
-    CURRENT_TETROMINO,
+    CURRENT_TETROMINO, ENEMY_PLAYFIELD,
     gameState,
     NEXT_TETROMINO, READY_STATE,
     SET_CLEARED_LINES,
@@ -55,7 +55,7 @@ const INITIAL_STATE = {
         position: [0, 0],
         rotation: 0,
     },
-    enemyPlayfields: null,
+    enemyPlayfield: null,
     score: 0,
     clearedLines: 0,
 };
@@ -66,6 +66,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 playfield: action.playfield,
+            };
+        case ENEMY_PLAYFIELD:
+            return {
+              ...state,
+              enemyPlayfield: action.enemyPlayfield,
             };
         case SET_GAME_STATE:
             return {
