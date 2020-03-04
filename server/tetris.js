@@ -223,6 +223,7 @@ function emitReadyStates(session) {
     console.log(playerStates);
     session.players.forEach(function(user) {
         emit("readyState", playerStates, user.socketID);
+        emitPlayfield(user);
     });
 }
 
