@@ -11,7 +11,7 @@ import {
     updateAllPlayers,
     checkGameOver,
     updatePlayer,
-    emitPlayerState
+    levelUpRequirement, emitLevel
 } from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require("auto-bind");
@@ -28,9 +28,11 @@ export default class Player {
         this.socketID = false;
         this.tetrominos = null;
         this.interval = 300;
+        this.level = 1;
         this.gameOver = false;
         this.score = 0;
         this.totalClearedLines = 0;
+        this.linesToLevelUp = levelUpRequirement;
         this.ready = false;
         this.host = false;
     }
@@ -57,6 +59,7 @@ export default class Player {
                 let clearedLines = this.playfield.clearFilledLines(
                     this.currentTetromino
                 );
+                this.increaseLevel(clearedLines);
                 for (let i = 0; i < clearedLines; i++) {
                     this.session.disableLines(this);
                 }
@@ -67,7 +70,10 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
         }
         emitTetromino(this);
-        setTimeout(this.play, this.interval);
+        let finalInterval = this.interval;
+        if (finalInterval > 100)
+            finalInterval -= (this.level - 1) * 25;
+        setTimeout(this.play, finalInterval);
     }
 
     increaseScore(clearedLines) {
@@ -75,6 +81,15 @@ export default class Player {
         this.score += clearedLines * (10 + (clearedLines - 1));
         emit("score", this.score, this.socketID);
         emit("clearedLines", this.totalClearedLines, this.socketID);
+    }
+
+    increaseLevel(currentClearedLines) {
+        this.linesToLevelUp -= currentClearedLines;
+        if (this.linesToLevelUp <= 0 && this.level < 10) {
+            this.level += 1;
+            this.linesToLevelUp = levelUpRequirement;
+        }
+        emitLevel(this);
     }
 
     newTetromino() {
