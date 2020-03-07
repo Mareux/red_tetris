@@ -11,7 +11,10 @@ import {
     updateAllPlayers,
     checkGameOver,
     updatePlayer,
-    levelUpRequirement, emitLevel
+    levelUpRequirement,
+    emitLevel,
+    emitNext,
+    emitPlayerState
 } from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require("auto-bind");
@@ -49,10 +52,12 @@ export default class Player {
                     if (checkGameOver(this.session)) {
                         finishGame(this.session);
                         updateAllPlayers(this.session);
+                        emitPlayerState(this);
                         console.log("meow");
                     }
                     else {
                         updatePlayer(this);
+                        emitPlayerState(this);
                     }
                     return;
                 }
@@ -78,16 +83,19 @@ export default class Player {
 
     increaseScore(clearedLines) {
         this.totalClearedLines += clearedLines;
-        this.score += clearedLines * (10 + (clearedLines - 1));
+        this.score += clearedLines * (1000 + (clearedLines - 115));
         emit("score", this.score, this.socketID);
         emit("clearedLines", this.totalClearedLines, this.socketID);
     }
 
     increaseLevel(currentClearedLines) {
         this.linesToLevelUp -= currentClearedLines;
+        const extraLines = -this.linesToLevelUp;
         if (this.linesToLevelUp <= 0 && this.level < 10) {
             this.level += 1;
             this.linesToLevelUp = levelUpRequirement;
+            if (extraLines > 0)
+                this.linesToLevelUp -= extraLines;
         }
         emitLevel(this);
     }
@@ -100,7 +108,7 @@ export default class Player {
         this.nextTetromino = copyTetromino(
             this.session.tetrominos[this.nextTetrominoIndex]
         );
-        emit("nextTetromino", this.nextTetromino, this.socketID);
+        emitNext(this);
     }
 
     rotate() {
@@ -122,6 +130,8 @@ export default class Player {
     }
 
     disableLine() {
+        if (this.gameOver)
+            return;
         this.currentTetromino.eraseTetromino(this.playfield.playfield);
         for (let row = 0; row < this.playfield.playfield.length - 1; row++) {
             for (let column = 0; column < 10; column++) {

@@ -1,3 +1,5 @@
+import { defaultColor } from "./tetris";
+
 const autoBind = require("auto-bind");
 
 export default class Tetromino {
@@ -46,7 +48,7 @@ export default class Tetromino {
                     ) {
                         playfield[this.position[1] + row][
                             this.position[0] + column
-                        ] = "gray";
+                        ] = defaultColor;
                     }
                 }
                 column += 1;

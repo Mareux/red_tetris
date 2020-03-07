@@ -6,7 +6,7 @@ import Playfield from "./playfield";
 
 const autoBind = require("auto-bind");
 
-export const defaultColor = "gray";
+export const defaultColor = "#111329";
 export const disabledColor = "pink";
 
 export function createPlayfield() {
@@ -15,7 +15,7 @@ export function createPlayfield() {
     });
 }
 
-export const levelUpRequirement = 1;
+export const levelUpRequirement = 4;
 
 export function emitEvents(thisPlayer) {
     emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
@@ -50,6 +50,10 @@ export function emitPlayerState(user) {
     emit("gameOver", user.gameOver, user.socketID);
 }
 
+export function emitNext(user) {
+    emit("nextTetromino", user.nextTetromino, user.socketID);
+}
+
 export function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
@@ -57,6 +61,8 @@ export function initialPackage(thisPlayer) {
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
     emitLevel(thisPlayer);
+    if (thisPlayer.session.gameState === "GAME_STARTED")
+        emitNext(thisPlayer);
 }
 
 class GameSession {
@@ -83,13 +89,13 @@ class GameSession {
 }
 
 const tetrominos = [
-    new Tetromino(Line[0], "cyan", [5, -2], Line),
-    new Tetromino(L[0], "orange", [5, -2], L),
-    new Tetromino(ReverseL[0], "blue", [5, -2], ReverseL),
-    new Tetromino(Square[0], "yellow", [5, -2], Square),
-    new Tetromino(S[0], "green", [5, -2], S),
-    new Tetromino(Z[0], "red", [5, -2], Z),
-    new Tetromino(T[0], "purple", [5, -2], T)
+    new Tetromino(Line[0], "#40AEB3", [5, -2], Line),
+    new Tetromino(L[0], "#68DF4E", [5, -2], L),
+    new Tetromino(ReverseL[0], "#5369C2", [5, -2], ReverseL),
+    new Tetromino(Square[0], "#F2B0EF", [5, -2], Square),
+    new Tetromino(S[0], "#FAFE59", [5, -2], S),
+    new Tetromino(Z[0], "#FFA65A", [5, -2], Z),
+    new Tetromino(T[0], "#9949BF", [5, -2], T)
 ];
 
 function createTetromino() {
@@ -202,15 +208,17 @@ function readyCheck(session) {
 
 function startGameForAllUsers(session) {
     resetGame(session);
-    session.players.map(function(user) {
+    if (session.gameState !== "GAME_STARTED")
+        session.gameState = "GAME_STARTED";
+
+    session.players.forEach(function(user) {
+        initialPackage(user);
         clearTimeout(() => {
             if (user) user.play();
         }, interval);
         setTimeout(() => {
             if (user) user.play();
         }, interval);
-        if (session.gameState !== "GAME_STARTED")
-            session.gameState = "GAME_STARTED";
         emitSessionState(user);
     });
 }
@@ -285,12 +293,7 @@ export function updateAllPlayers(session) {
 }
 
 export function checkGameOver(session) {
-    let result = true;
-    session.players.forEach((player) => {
-       if (player.gameOver === false)
-           result = false;
-    });
-    return result;
+    return session.players.every(player => player.gameOver);
 }
 
 export function toggleReady(clientData) {

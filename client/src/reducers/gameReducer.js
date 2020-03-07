@@ -39,19 +39,19 @@ const INITIAL_STATE = {
     host: true,
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {
-        return [...new Array(10)].map(() => 'gray');
+        return [...new Array(10)].map(() => '#111329');
     }),
     nextTetromino: {
         name: "",
         shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-        color: 'gray',
+        color: '#111329',
         position: [0, 0],
         rotation: 0,
     },
     currentTetromino: {
         name: "",
         shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-        color: 'gray',
+        color: '#111329',
         position: [0, 0],
         rotation: 0,
     },
