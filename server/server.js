@@ -31,20 +31,20 @@ io.on("connection", client => {
     client.on("Hash", function(string) {
         joinTetris(string, client.id);
     });
-    client.on("ArrowUp", usernameAndRoom => {
-        rotateCurrentTetromino(usernameAndRoom);
+    client.on("ArrowUp", clientData => {
+        rotateCurrentTetromino(clientData);
     });
-    client.on("ArrowDown", usernameAndRoom => {
-        setGameInterval(usernameAndRoom, 50);
+    client.on("ArrowDown", clientData => {
+        setGameInterval(clientData, 50);
     });
-    client.on("ArrowDownUnpressed", usernameAndRoom => {
-        setGameInterval(usernameAndRoom, 300);
+    client.on("ArrowDownUnpressed", clientData => {
+        setGameInterval(clientData, 300);
     });
-    client.on("ArrowLeft", usernameAndRoom => {
-        moveLeft(usernameAndRoom);
+    client.on("ArrowLeft", clientData => {
+        moveLeft(clientData);
     });
-    client.on("ArrowRight", usernameAndRoom => {
-        moveRight(usernameAndRoom);
+    client.on("ArrowRight", clientData => {
+        moveRight(clientData);
     });
     client.on("startGame", clientData => {
        startGame(clientData);

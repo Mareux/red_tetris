@@ -3,8 +3,15 @@ import {
     copyTetromino,
     createPlayfield,
     disabledColor,
-    emitPlayfield, emitSessionState,
-    emitTetromino
+    emitPlayfield,
+    emitSessionState,
+    emitTetromino,
+    finishGame,
+    initialPackage,
+    updateAllPlayers,
+    checkGameOver,
+    updatePlayer,
+    emitPlayerState
 } from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require("auto-bind");
@@ -37,8 +44,14 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
                 if (this.currentTetromino.position[1] < 0) {
                     this.gameOver = true;
-                    this.session.gameState = "GAME_FINISHED";
-                    emitSessionState(this);
+                    if (checkGameOver(this.session)) {
+                        finishGame(this.session);
+                        updateAllPlayers(this.session);
+                        console.log("meow");
+                    }
+                    else {
+                        updatePlayer(this);
+                    }
                     return;
                 }
                 let clearedLines = this.playfield.clearFilledLines(

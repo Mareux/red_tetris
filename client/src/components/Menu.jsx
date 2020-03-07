@@ -17,14 +17,14 @@ const Menu = props => {
     const host = useSelector(store => store.host);
     const players = useSelector(store => store.players);
 
-    const [open, setOpen] = useState(state === gameState.STARTING_SCREEN);
+    const [open, setOpen] = useState(true);
 
     const handleOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
-        if (state !== gameState.STARTING_SCREEN) setOpen(false);
+        setOpen(false);
     };
 
     const handleStart = () => {
@@ -73,7 +73,7 @@ const Menu = props => {
     };
 
     return (
-        players && <Dialog maxWidth="xs" fullWidth open={open} onClose={handleClose}>
+        players && <Dialog maxWidth="xs" fullWidth open={open} disableBackdropClick={true} onClose={handleClose}>
             <Toolbar style={{ paddingLeft: 0 }}>
                 <DialogTitle>
                     {gameState.STARTING_SCREEN === state

@@ -27,7 +27,7 @@ function useKeyHandlers(socket, clientData) {
                 key === "ArrowLeft" ||
                 key === "ArrowRight"
             ) {
-                socket.emit(key, [clientData.username, clientData.room]);
+                socket.emit(key, clientData);
             }
         };
 
@@ -35,10 +35,7 @@ function useKeyHandlers(socket, clientData) {
             const key = event.code;
 
             if (key === "ArrowDown")
-                socket.emit(key + "Unpressed", [
-                    clientData.username,
-                    clientData.room
-                ]);
+                socket.emit(key + "Unpressed", clientData);
         };
     }, [socket]);
 }
@@ -63,8 +60,9 @@ const App = () => {
     return (
         location.hash &&
         <>
-            <Menu socket={socket} />
-            <GameContainer field={<Field />} />
+            <Menu socket={socket}/>
+            < GameContainer field={<Field />} />
+
         </>
         || <LogIn socket={socket}/>
     );
