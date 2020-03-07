@@ -15,6 +15,8 @@ export function createPlayfield() {
     });
 }
 
+export const levelUpRequirement = 1;
+
 export function emitEvents(thisPlayer) {
     emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
 }
@@ -54,6 +56,7 @@ export function initialPackage(thisPlayer) {
     emitReadyStates(thisPlayer.session);
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
+    emitLevel(thisPlayer);
 }
 
 class GameSession {
@@ -225,6 +228,8 @@ export function resetGame (session) {
         player.interval = 300;
         player.gameOver = false;
         player.score = 0;
+        player.level = 1;
+        player.linesToLevelUp = levelUpRequirement;
         player.totalClearedLines = 0;
         player.ready = false;
         player.currentTetromino = copyTetromino(session.tetrominos[0]);
@@ -260,6 +265,9 @@ function emitReadyStates(session) {
     });
 }
 
+export function emitLevel(thisPlayer) {
+    emit("level", thisPlayer.level, thisPlayer.socketID);
+}
 
 export function updatePlayer(thisPlayer) {
     emitPlayfield(thisPlayer);
@@ -267,10 +275,11 @@ export function updatePlayer(thisPlayer) {
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
     emitPlayerState(thisPlayer);
+    emitLevel(thisPlayer);
 }
 
 export function updateAllPlayers(session) {
-    session.players.forEach((player) =>{
+    session.players.forEach((player) => {
         initialPackage(player);
     });
 }
