@@ -44,15 +44,15 @@ const Menu = props => {
     }, [state]);
 
     const menuButtons = () => {
-        const ready = players.find(
+        const user = players.find(
             user => user.username === clientData.username
-        ).ready;
+        );
 
         return (
             <DialogActions>
                 {!host ? (
                     <Button color="secondary" onClick={handleReady}>
-                        {!ready ? "READY" : "UNREADY"}
+                        {user && !user.ready ? "READY" : "UNREADY"}
                     </Button>
                 ) : (
                     <>
@@ -60,11 +60,11 @@ const Menu = props => {
                             {state === gameState.STARTING_SCREEN
                                 ? "START"
                                 : state === gameState.GAME_FINISHED
-                                ? "RESTART"
-                                : "RETURN"}
+                                    ? "RESTART"
+                                    : "RETURN"}
                         </Button>
                         <Button color="secondary" onClick={handleReady}>
-                            {!ready ? "READY" : "UNREADY"}
+                            {user && !user.ready ? "READY" : "UNREADY"}
                         </Button>
                     </>
                 )}
@@ -73,21 +73,21 @@ const Menu = props => {
     };
 
     return (
-        <Dialog maxWidth="xs" fullWidth open={open} onClose={handleClose}>
+        players && <Dialog maxWidth="xs" fullWidth open={open} onClose={handleClose}>
             <Toolbar style={{ paddingLeft: 0 }}>
                 <DialogTitle>
                     {gameState.STARTING_SCREEN === state
                         ? "Starting screen"
                         : gameState.GAME_FINISHED === state
-                        ? "Game over!"
-                        : "Pause"}
+                            ? "Game over!"
+                            : "Pause"}
                 </DialogTitle>
-                <div style={{ flexGrow: 1 }} />
+                <div style={{ flexGrow: 1 }}/>
                 <Typography variant="body2">Room: {clientData.room}</Typography>
             </Toolbar>
 
             <DialogContent>
-                <ListOfPlayers />
+                <ListOfPlayers/>
             </DialogContent>
             {menuButtons()}
         </Dialog>

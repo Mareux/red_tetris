@@ -1,6 +1,6 @@
 import {
     CURRENT_TETROMINO, ENEMY_PLAYFIELD,
-    gameState,
+    gameState, GET_CLIENT_DATA,
     NEXT_TETROMINO, READY_STATE,
     SET_CLEARED_LINES,
     SET_GAME_STATE, SET_HOST,
@@ -62,6 +62,11 @@ const INITIAL_STATE = {
 
 function gameReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
+        case GET_CLIENT_DATA:
+            return {
+              ...state,
+              clientData: action.clientData
+            };
         case SET_PLAYFIELD:
             return {
                 ...state,

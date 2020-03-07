@@ -6,6 +6,7 @@ import Field from "./Field";
 import { useSelector } from "react-redux";
 import useSocketDispatcher from "../hooks/useSocketDispatcher";
 import Menu from "./Menu";
+import LogIn from "./LogInScreen";
 
 function useHash(socket) {
     useEffect(() => {
@@ -60,10 +61,12 @@ const App = () => {
     useKeyHandlers(socket, clientData);
 
     return (
+        location.hash &&
         <>
             <Menu socket={socket} />
             <GameContainer field={<Field />} />
         </>
+        || <LogIn socket={socket}/>
     );
 };
 

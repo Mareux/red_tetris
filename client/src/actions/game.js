@@ -6,6 +6,7 @@ export const SET_CLEARED_LINES = 'clearedLines';
 export const SET_HOST = 'isHost';
 export const READY_STATE = 'readyState';
 export const ENEMY_PLAYFIELD = 'enemyPlayfield';
+export const GET_CLIENT_DATA = 'GET_CLIENT_DATA';
 
 export const SET_PLAYFIELD = 'playfield';
 
@@ -15,6 +16,15 @@ export const gameState = {
     GAME_PAUSE: 'GAME_PAUSE',
     GAME_FINISHED: 'GAME_FINISHED'
 };
+
+export function getClientData(dispatch) {
+    return (clientData) => {
+        dispatch({
+            type: GET_CLIENT_DATA,
+            clientData
+        })
+    }
+}
 
 export function enemyPlayfield(dispatch) {
     return (enemyPlayfield) => {
