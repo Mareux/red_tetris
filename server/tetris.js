@@ -44,6 +44,10 @@ export function emitSessionState(user) {
     emit("gameState", user.session.gameState, user.socketID);
 }
 
+export function emitPlayerState(user) {
+    emit("gameOver", user.gameOver, user.socketID);
+}
+
 export function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
@@ -262,6 +266,7 @@ export function updatePlayer(thisPlayer) {
     emitTetromino(thisPlayer);
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
+    emitPlayerState(thisPlayer);
 }
 
 export function updateAllPlayers(session) {

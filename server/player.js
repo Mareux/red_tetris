@@ -10,7 +10,8 @@ import {
     initialPackage,
     updateAllPlayers,
     checkGameOver,
-    updatePlayer
+    updatePlayer,
+    emitPlayerState
 } from "./tetris";
 import Playfield from "./playfield";
 const autoBind = require("auto-bind");
