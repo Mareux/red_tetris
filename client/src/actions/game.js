@@ -2,6 +2,7 @@ export const SET_GAME_STATE = 'gameState';
 export const NEXT_TETROMINO = 'nextTetromino';
 export const CURRENT_TETROMINO = 'tetromino';
 export const SET_SCORE = 'score';
+export const SET_LEVEL = 'level';
 export const SET_CLEARED_LINES = 'clearedLines';
 export const SET_HOST = 'isHost';
 export const READY_STATE = 'readyState';
@@ -58,6 +59,15 @@ export function setScore(dispatch) {
         dispatch({
             type: SET_SCORE,
             score
+        })
+    }
+}
+
+export function setLevel(dispatch) {
+    return (level) => {
+        dispatch({
+            type: SET_LEVEL,
+            level
         })
     }
 }

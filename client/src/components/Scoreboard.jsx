@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 function Scoreboard() {
     const score = useSelector(store => store.score);
-    const [level, setLevel] = useState("");
+    const level = useSelector(store => store.level);
     const lines = useSelector(store => store.clearedLines);
 
     return (

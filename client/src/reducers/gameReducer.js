@@ -3,7 +3,7 @@ import {
     gameState, GET_CLIENT_DATA,
     NEXT_TETROMINO, READY_STATE,
     SET_CLEARED_LINES,
-    SET_GAME_STATE, SET_HOST,
+    SET_GAME_STATE, SET_HOST, SET_LEVEL,
     SET_PLAYFIELD,
     SET_SCORE
 } from "../actions/game";
@@ -58,6 +58,7 @@ const INITIAL_STATE = {
     enemyPlayfield: null,
     score: 0,
     clearedLines: 0,
+    level: 1,
 };
 
 function gameReducer(state = INITIAL_STATE, action) {
@@ -96,6 +97,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 score: action.score,
+            };
+        case SET_LEVEL:
+            return {
+              ...state,
+              level: action.level,
             };
         case SET_CLEARED_LINES:
             return {
