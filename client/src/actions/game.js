@@ -8,6 +8,7 @@ export const SET_HOST = 'isHost';
 export const READY_STATE = 'readyState';
 export const ENEMY_PLAYFIELD = 'enemyPlayfield';
 export const GET_CLIENT_DATA = 'GET_CLIENT_DATA';
+export const INITIAL_ENEMY_PLAYFIELD = 'initialEnemyPlayfield';
 
 export const SET_PLAYFIELD = 'playfield';
 
@@ -23,6 +24,15 @@ export function getClientData(dispatch) {
         dispatch({
             type: GET_CLIENT_DATA,
             clientData
+        })
+    }
+}
+
+export function initialEnemyPlayfield(dispatch) {
+    return (enemyPlayfield) => {
+        dispatch({
+            type: INITIAL_ENEMY_PLAYFIELD,
+            enemyPlayfield
         })
     }
 }

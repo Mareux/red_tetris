@@ -4,15 +4,17 @@ import "./Field.css";
 import "./EnemyPlayfield.css";
 
 const EnemyPlayfield = () => {
-    const enemyPlayfield = useSelector(store => store.enemyPlayfield);
+    const players = useSelector(store => store.enemyPlayfield);
+
     return (
-        <>
-            <p style={{margin: "10 px 0 10px 10px"}}>
-                {enemyPlayfield ? enemyPlayfield.username : ""}
-            </p>
-            <div className={"enemyPlayfield"}>
-                {enemyPlayfield &&
-                    enemyPlayfield.playfield.map((row, i) => (
+        players && players.map(player => {
+            return <>
+                <p style={{ margin: "10 px 0 10px 10px" }}>
+                    {player && player.playfield ? player.username : ""}
+                </p>
+                <div className={"enemyPlayfield"}>
+                    {player && player.playfield &&
+                    player.playfield.map((row, i) => (
                         <div key={i} className="row">
                             {row.map((column, i) => (
                                 <div
@@ -20,16 +22,18 @@ const EnemyPlayfield = () => {
                                     className={"column"}
                                     style={{
                                         backgroundColor:
-                                            column === "gray"
-                                                ? "gray"
+                                            column === "#111329"
+                                                ? "#111329"
                                                 : "#FF7272"
                                     }}
                                 />
                             ))}
                         </div>
                     ))}
-            </div>
-        </>
+                </div>
+            </>;
+        })
+
     );
 };
 

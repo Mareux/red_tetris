@@ -25,15 +25,17 @@ export function emitPlayfield(thisPlayer) {
     thisPlayer.currentTetromino.eraseTetromino(thisPlayer.playfield.playfield);
     emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
 
-    thisPlayer.session.players.forEach(function(user) {
-        if (user !== thisPlayer) {
-            const enemyPlayfield = {
-                username: thisPlayer.name,
-                playfield: thisPlayer.playfield.playfield
-            };
-            emit("enemyPlayfield", enemyPlayfield, user.socketID);
-        }
-    });
+    if (thisPlayer.session.gameState === "GAME_STARTED") {
+        thisPlayer.session.players.forEach(function(user) {
+            if (user !== thisPlayer) {
+                const enemyPlayfield = {
+                    username: thisPlayer.name,
+                    playfield: thisPlayer.playfield.playfield
+                };
+                emit("enemyPlayfield", enemyPlayfield, user.socketID);
+            }
+        });
+    }
 
     thisPlayer.currentTetromino.drawTetromino(thisPlayer.playfield.playfield);
 }
@@ -54,8 +56,22 @@ export function emitNext(user) {
     emit("nextTetromino", user.nextTetromino, user.socketID);
 }
 
+function emitInitialEnemyPlayfield(user) {
+    const enemyPlayfield = user.session.players.map(player => {
+        if (player.name !== user.name)
+            return {
+                username: player.name,
+                playfield: player.playfield.playfield
+            };
+    });
+
+    if (enemyPlayfield)
+        emit("initialEnemyPlayfield", enemyPlayfield, user.socketID);
+}
+
 export function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
+    emitInitialEnemyPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
     emitReadyStates(thisPlayer.session);
     emitHostStatus(thisPlayer);
@@ -252,7 +268,7 @@ function startGameForAllUsers(session) {
     });
 }
 
-export function resetGame (session) {
+export function resetGame(session) {
     session.gameState = "GAME_FINISHED";
     session.tetrominos = Array(createTetromino(), createTetromino());
 
@@ -329,7 +345,7 @@ export function checkGameOver(session) {
 export function toggleReady(clientData) {
     const user = findUserInSession(clientData.room, clientData.username);
     if (!user)
-        return ;
+        return;
     user.ready = !user.ready;
     console.log(user.ready);
     const session = findGameSession(clientData.room);

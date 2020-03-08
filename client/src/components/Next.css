@@ -1,5 +1,5 @@
 .next {
-    background-color: darkgray;
+    background-color: #D8664D;
     padding: 8px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
     margin: 10px;
@@ -7,9 +7,9 @@
 }
 
 .next_figure {
-    width: 125px;
+    width: auto;
     height: auto;
-    background-color: rgba(244, 240, 238, 0.98);
+    background-color: #E20338;
     border: 2px solid black;
     border-radius: 3px;
 }

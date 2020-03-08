@@ -1,6 +1,6 @@
 import {
     CURRENT_TETROMINO, ENEMY_PLAYFIELD,
-    gameState, GET_CLIENT_DATA,
+    gameState, GET_CLIENT_DATA, INITIAL_ENEMY_PLAYFIELD,
     NEXT_TETROMINO, READY_STATE,
     SET_CLEARED_LINES,
     SET_GAME_STATE, SET_HOST, SET_LEVEL,
@@ -12,10 +12,10 @@ function getClientData(hash) {
     if (!hash)
         return {
             username: "default",
-            room: "default",
+            room: "default"
         };
 
-    let split = hash.split('[');
+    let split = hash.split("[");
     let room, username;
     room = split[0].slice(1);
     if (split[1]) {
@@ -24,8 +24,8 @@ function getClientData(hash) {
 
     return {
         username,
-        room,
-    }
+        room
+    };
 }
 
 const INITIAL_STATE = {
@@ -35,48 +35,58 @@ const INITIAL_STATE = {
         username: getClientData(location.hash).username,
         host: false,
         ready: false,
+        playfield: null
     }],
+    enemyPlayfield: null,
     host: true,
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {
-        return [...new Array(10)].map(() => '#111329');
+        return [...new Array(10)].map(() => "#111329");
     }),
     nextTetromino: {
         name: "",
         shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-        color: '#111329',
+        color: "#111329",
         position: [0, 0],
-        rotation: 0,
+        rotation: 0
     },
     currentTetromino: {
         name: "",
         shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-        color: '#111329',
+        color: "#111329",
         position: [0, 0],
-        rotation: 0,
+        rotation: 0
     },
-    enemyPlayfield: null,
     score: 0,
     clearedLines: 0,
-    level: 1,
+    level: 1
 };
 
 function gameReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case GET_CLIENT_DATA:
             return {
-              ...state,
-              clientData: action.clientData
+                ...state,
+                clientData: action.clientData
             };
         case SET_PLAYFIELD:
             return {
                 ...state,
-                playfield: action.playfield,
+                playfield: action.playfield
             };
         case ENEMY_PLAYFIELD:
             return {
+                ...state,
+                enemyPlayfield: state.enemyPlayfield.map(player => {
+                    if (player.username === action.enemyPlayfield.username)
+                        return action.enemyPlayfield;
+                    return player;
+                })
+            };
+        case INITIAL_ENEMY_PLAYFIELD:
+            return {
               ...state,
-              enemyPlayfield: action.enemyPlayfield,
+              enemyPlayfield: action.enemyPlayfield
             };
         case SET_GAME_STATE:
             return {
@@ -86,37 +96,37 @@ function gameReducer(state = INITIAL_STATE, action) {
         case NEXT_TETROMINO:
             return {
                 ...state,
-                nextTetromino: action.nextTetromino,
+                nextTetromino: action.nextTetromino
             };
         case CURRENT_TETROMINO:
             return {
                 ...state,
-                currentTetromino: action.currentTetromino,
+                currentTetromino: action.currentTetromino
             };
         case SET_SCORE:
             return {
                 ...state,
-                score: action.score,
+                score: action.score
             };
         case SET_LEVEL:
             return {
-              ...state,
-              level: action.level,
+                ...state,
+                level: action.level
             };
         case SET_CLEARED_LINES:
             return {
                 ...state,
-                clearedLines: action.clearedLines,
+                clearedLines: action.clearedLines
             };
         case SET_HOST:
             return {
                 ...state,
-                host: action.host,
+                host: action.host
             };
         case READY_STATE:
             return {
                 ...state,
-                players: action.players,
+                players: action.players
             };
         default:
             return state;

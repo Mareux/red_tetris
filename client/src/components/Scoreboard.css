@@ -1,25 +1,25 @@
 .board {
     width: auto;
-    background-color: darkgray;
+    background-color: #D8664D;
     margin: 10px;
     padding: 8px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
     border-radius: 5px;
 }
 
-.board p {
-    text-transform: uppercase;
-    margin: 0;
-    padding-bottom: 1px;
-    padding-top: 3px;
-    font-weight: bold;
-    text-align: center;
-}
+/*.board p {*/
+/*    text-transform: uppercase;*/
+/*    margin: 0;*/
+/*    padding-bottom: 1px;*/
+/*    padding-top: 3px;*/
+/*    font-weight: bold;*/
+/*    text-align: center;*/
+/*}*/
 
-.board div {
-    border: 2px solid black;
-    border-radius: 3px;
-    background-color: rgba(244, 240, 238, 0.98);
-    width: auto;
-    height: 20px;
-}
+/*.board div {*/
+/*    border: 2px solid black;*/
+/*    border-radius: 3px;*/
+/*    background-color: rgba(244, 240, 238, 0.98);*/
+/*    width: auto;*/
+/*    height: 20px;*/
+/*}*/
