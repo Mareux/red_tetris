@@ -23,7 +23,9 @@ app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
 
-server.listen(port);
+if (process.env.NODE_ENV !== 'test') {
+    server.listen(port);
+}
 
 export let interval = 300;
 

@@ -173,7 +173,7 @@ export function rotateCurrentTetromino(clientData) {
     player.rotate();
 }
 
-function getUser(room, username, socketID) {
+export function getUser(room, username, socketID) {
     const session = findGameSession(room) || createGameSession(room, username);
 
     const user = findUserInSession(room, username);
@@ -185,6 +185,7 @@ function getUser(room, username, socketID) {
         console.log(`User "${username}" is already in session.`);
         user.socketID = socketID;
     }
+    return user;
 }
 
 export function parseUsername(split) {

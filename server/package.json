@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest --passWithNoTests --detectOpenHandles",
+    "test": "NODE_ENV=test jest --detectOpenHandles --maxWorkers=1",
     "start": "rm -rf build && webpack --mode development && node build/server.js"
   },
   "keywords": [],
