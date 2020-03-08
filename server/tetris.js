@@ -196,6 +196,13 @@ function emitHostStatus(user) {
     emit("isHost", user.session.host === user.name, user.socketID);
 }
 
+function sendInitialPackageToEveryone(room) {
+    const session = findGameSession(room);
+    session.players.forEach(player => {
+        initialPackage(player);
+    });
+}
+
 export function joinTetris(hash, socketID) {
     const split = hash.split("[");
     const room = split[0].slice(1);
@@ -205,8 +212,7 @@ export function joinTetris(hash, socketID) {
     console.log(`User "${username}" tried to connect to room: "${room}"`);
     getUser(room, username, socketID);
 
-    const user = findUserInSession(room, username);
-    initialPackage(user);
+    sendInitialPackageToEveryone(room);
 }
 
 function readyCheck(session) {
