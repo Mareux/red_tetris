@@ -2,7 +2,7 @@ import { defaultColor } from "./tetris";
 
 const autoBind = require("auto-bind");
 
-export default class Tetromino {
+export default class Piece {
     constructor(shape, color, position, rotationArray) {
         autoBind(this);
         this.shape = shape;

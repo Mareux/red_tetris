@@ -1,5 +1,5 @@
 import { emit, interval } from "./server";
-import Tetromino from "./tetromino";
+import Piece from "./piece";
 import Player from "./player";
 import { L, Line, ReverseL, S, Square, T, Z } from "./tetrominos";
 import Playfield from "./playfield";
@@ -65,7 +65,7 @@ export function initialPackage(thisPlayer) {
         emitNext(thisPlayer);
 }
 
-class GameSession {
+class Game {
     constructor() {
         autoBind(this);
         this.room = "";
@@ -89,13 +89,13 @@ class GameSession {
 }
 
 const tetrominos = [
-    new Tetromino(Line[0], "#40AEB3", [5, -2], Line),
-    new Tetromino(L[0], "#68DF4E", [5, -2], L),
-    new Tetromino(ReverseL[0], "#5369C2", [5, -2], ReverseL),
-    new Tetromino(Square[0], "#F2B0EF", [5, -2], Square),
-    new Tetromino(S[0], "#FAFE59", [5, -2], S),
-    new Tetromino(Z[0], "#FFA65A", [5, -2], Z),
-    new Tetromino(T[0], "#9949BF", [5, -2], T)
+    new Piece(Line[0], "#40AEB3", [5, -2], Line),
+    new Piece(L[0], "#68DF4E", [5, -2], L),
+    new Piece(ReverseL[0], "#5369C2", [5, -2], ReverseL),
+    new Piece(Square[0], "#F2B0EF", [5, -2], Square),
+    new Piece(S[0], "#FAFE59", [5, -2], S),
+    new Piece(Z[0], "#FFA65A", [5, -2], Z),
+    new Piece(T[0], "#9949BF", [5, -2], T)
 ];
 
 function createTetromino() {
@@ -118,7 +118,7 @@ function findUserInSession(room, username) {
 }
 
 export const copyTetromino = tetromino => {
-    return new Tetromino(
+    return new Piece(
         tetromino.shape,
         tetromino.color,
         [0, -1],
@@ -139,7 +139,7 @@ function createPlayer(session, name, socketID) {
 }
 
 function createGameSession(room, host) {
-    const session = new GameSession();
+    const session = new Game();
     session.room = room;
     session.host = host;
     sessions.push(session);
