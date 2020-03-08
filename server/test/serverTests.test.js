@@ -2,12 +2,13 @@ import Player from "../player";
 import {
     levelUpRequirement,
     createGameSession,
-    getUser
+    getUser, joinTetris
 } from "../tetris";
 
-const player1 = getUser('testRoomName', 'testUserName', 'testSocketID');
 
 describe('Connecting to a game session', () => {
+    const player1 = getUser('room1', 'user1', 'r1u1');
+
     test('New player is successfully created', () => {
         expect(player1).toBeDefined();
     });
@@ -22,12 +23,14 @@ describe('Connecting to a game session', () => {
 
     test('The first player to connect to the session becomes the host', () => {
         expect(player1.host).toBe(true);
-        expect(player1.session.host).toBe('testUserName');
+        expect(player1.session.host).toBe('user1');
     });
 });
 
 
 describe('Testing initial player state', () => {
+    const player1 = getUser('room1', 'user1', 'r1u1');
+
     test('The playfield has been generated', () => {
        expect(player1.playfield).toBeDefined();
        expect(player1.playfield.playfield).toBeDefined();
@@ -58,9 +61,11 @@ describe('Testing initial player state', () => {
     });
 });
 
-const session1 = player1.session;
 
 describe('Testing initial session state', () => {
+    const player1 = getUser('room1', 'user1', 'r1u1');
+    const session1 = player1.session;
+
     test('The session has only one player', () => {
         expect(session1.players.length).toBe(1);
     });
@@ -68,6 +73,28 @@ describe('Testing initial session state', () => {
     test('Two initial tetrominos have been generated', () => {
        expect(session1.tetrominos.length).toBe(2);
     });
+});
+
+describe('Adding another player to the session', () => {
+    const player1 = getUser('room1', 'user1', 'r1u1');
+    const session1 = player1.session;
+    const player2 = getUser('room1', 'user2', 'r1u2');
+
+   test('Another player was successfully created', () => {
+      expect(player2).toBeDefined();
+   });
+
+   test('The session has both players in "players" array', () => {
+       expect(session1.players.length).toBe(2);
+       expect(session1.players.find((element) => {
+           if (element === player1)
+               return true;
+       }));
+       expect(session1.players.find((element) => {
+           if (element === player2)
+               return true;
+       }));
+   });
 });
 
 describe("General stuff", () => {

@@ -135,7 +135,7 @@ export default class Player {
     }
 
     disableLine() {
-        if (this.gameOver)
+        if (this.gameOver || this.session.classicMode)
             return;
         this.currentTetromino.eraseTetromino(this.playfield.playfield);
         for (let row = 0; row < this.playfield.playfield.length - 1; row++) {

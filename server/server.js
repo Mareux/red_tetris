@@ -6,7 +6,8 @@ import {
     setGameInterval,
     startGame,
     toggleReady,
-    fallInstantly
+    fallInstantly,
+    toggleGameMode
 } from "./tetris";
 
 const express = require("express");
@@ -57,6 +58,9 @@ io.on("connection", client => {
     });
     client.on("Space", clientData => {
         fallInstantly(clientData);
+    });
+    client.on("toggleGameMode", clientData => {
+       toggleGameMode(clientData);
     });
 });
 

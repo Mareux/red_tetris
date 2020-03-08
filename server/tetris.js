@@ -61,6 +61,7 @@ export function initialPackage(thisPlayer) {
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
     emitLevel(thisPlayer);
+    emit('classicMode', thisPlayer.session.classicMode, thisPlayer.socketID);
     if (thisPlayer.session.gameState === "GAME_STARTED")
         emitNext(thisPlayer);
 }
@@ -73,6 +74,7 @@ class Game {
         this.gameState = "STARTING_SCREEN";
         this.players = Array();
         this.tetrominos = Array(createTetromino(), createTetromino());
+        this.classicMode = false;
     }
 
     newTetromino() {
@@ -86,6 +88,18 @@ class Game {
             }
         });
     }
+}
+
+export function emitGameMode(session) {
+    session.players.foreach(player => {
+        emit('classicMode', session.classicMode, player.socketID);
+    });
+}
+
+export function toggleGameMode(clientData) {
+    const session = findGameSession(clientData.room);
+    session.classicMode = !session.classicMode;
+    emitGameMode(session);
 }
 
 const tetrominos = [
@@ -216,6 +230,8 @@ export function joinTetris(hash, socketID) {
 }
 
 function readyCheck(session) {
+    if (!session)
+        return;
     return session.players.every(user => user.ready);
 }
 
