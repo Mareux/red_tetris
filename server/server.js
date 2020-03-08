@@ -5,7 +5,8 @@ import {
     rotateCurrentTetromino,
     setGameInterval,
     startGame,
-    toggleReady
+    toggleReady,
+    fallInstantly
 } from "./tetris";
 
 const express = require("express");
@@ -51,6 +52,9 @@ io.on("connection", client => {
     });
     client.on("readyCheck", clientData => {
         toggleReady(clientData);
+    });
+    client.on("Space", clientData => {
+        fallInstantly(clientData);
     });
 });
 

@@ -38,6 +38,7 @@ export default class Player {
         this.linesToLevelUp = levelUpRequirement;
         this.ready = false;
         this.host = false;
+        this.instantFall = false;
     }
 
     play() {
@@ -69,6 +70,10 @@ export default class Player {
                     this.session.disableLines(this);
                 }
                 this.increaseScore(clearedLines);
+                if (this.instantFall) {
+                    this.interval = 300;
+                    this.instantFall = false;
+                }
                 this.newTetromino();
                 emitPlayfield(this);
             } else

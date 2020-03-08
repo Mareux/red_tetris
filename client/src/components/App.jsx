@@ -25,7 +25,8 @@ function useKeyHandlers(socket, clientData) {
                 key === "ArrowUp" ||
                 key === "ArrowDown" ||
                 key === "ArrowLeft" ||
-                key === "ArrowRight"
+                key === "ArrowRight" ||
+                key === "Space"
             ) {
                 socket.emit(key, clientData);
             }
@@ -34,7 +35,7 @@ function useKeyHandlers(socket, clientData) {
         window.onkeyup = event => {
             const key = event.code;
 
-            if (key === "ArrowDown")
+            if (key === "ArrowDown" || key === "Space")
                 socket.emit(key + "Unpressed", clientData);
         };
     }, [socket]);

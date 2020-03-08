@@ -152,6 +152,12 @@ export function setGameInterval(clientData, gameInterval) {
     player.interval = gameInterval;
 }
 
+export function fallInstantly(clientData) {
+    const player = findUserInSession(clientData.room, clientData.username);
+    player.interval = 0;
+    player.instantFall = true;
+}
+
 export function moveLeft(clientData) {
     const player = findUserInSession(clientData.room, clientData.username);
     player.moveLeft();
@@ -242,6 +248,7 @@ export function resetGame (session) {
         player.ready = false;
         player.currentTetromino = copyTetromino(session.tetrominos[0]);
         player.nextTetromino = copyTetromino(session.tetrominos[1]);
+        player.instantFall = false;
     });
 }
 
@@ -298,6 +305,8 @@ export function checkGameOver(session) {
 
 export function toggleReady(clientData) {
     const user = findUserInSession(clientData.room, clientData.username);
+    if (!user)
+        return ;
     user.ready = !user.ready;
     console.log(user.ready);
     const session = findGameSession(clientData.room);
