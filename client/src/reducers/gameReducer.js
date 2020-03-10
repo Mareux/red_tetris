@@ -35,9 +35,8 @@ const INITIAL_STATE = {
         username: getClientData(location.hash).username,
         host: false,
         ready: false,
-        playfield: null
     }],
-    enemyPlayfield: null,
+    enemyPlayfield: [],
     host: true,
     gameState: gameState.STARTING_SCREEN,
     playfield: [...new Array(20)].map(() => {

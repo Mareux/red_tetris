@@ -3,20 +3,14 @@ import {
     copyTetromino,
     createPlayfield,
     disabledColor,
-    emitPlayfield,
-    emitSessionState,
-    emitTetromino,
     finishGame,
-    initialPackage,
     updateAllPlayers,
     checkGameOver,
     updatePlayer,
     levelUpRequirement,
-    emitLevel,
-    emitNext,
-    emitPlayerState
 } from "./tetris";
 import Playfield from "./playfield";
+import { emitLevel, emitNext, emitPlayerState, emitPlayfield, emitTetromino } from "./gameEmits";
 const autoBind = require("auto-bind");
 
 export default class Player {
@@ -118,18 +112,21 @@ export default class Player {
 
     rotate() {
         if (this.gameOver) return;
+
         this.currentTetromino.rotate(this.playfield);
         emitTetromino(this);
     }
 
     moveLeft() {
         if (this.gameOver) return;
+
         this.currentTetromino.moveLeft(this.playfield);
         emitTetromino(this);
     }
 
     moveRight() {
         if (this.gameOver) return;
+
         this.currentTetromino.moveRight(this.playfield);
         emitTetromino(this);
     }

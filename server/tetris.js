@@ -3,6 +3,14 @@ import Piece from "./piece";
 import Player from "./player";
 import { L, Line, ReverseL, S, Square, T, Z } from "./tetrominos";
 import Playfield from "./playfield";
+import {
+    emitGameMode,
+    emitHostStatus,
+    emitInitialEnemyPlayfield, emitLevel, emitNext, emitPlayerState,
+    emitPlayfield, emitReadyStates,
+    emitSessionState,
+    emitTetromino
+} from "./gameEmits";
 
 const autoBind = require("auto-bind");
 
@@ -15,59 +23,19 @@ export function createPlayfield() {
     });
 }
 
+const tetrominos = [
+    new Piece(Line[0], "#40AEB3", [5, -2], Line),
+    new Piece(L[0], "#68DF4E", [5, -2], L),
+    new Piece(ReverseL[0], "#5369C2", [5, -2], ReverseL),
+    new Piece(Square[0], "#F2B0EF", [5, -2], Square),
+    new Piece(S[0], "#FAFE59", [5, -2], S),
+    new Piece(Z[0], "#FFA65A", [5, -2], Z),
+    new Piece(T[0], "#9949BF", [5, -2], T)
+];
+
 export const levelUpRequirement = 4;
 
-export function emitEvents(thisPlayer) {
-    emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
-}
-
-export function emitPlayfield(thisPlayer) {
-    thisPlayer.currentTetromino.eraseTetromino(thisPlayer.playfield.playfield);
-    emit("playfield", thisPlayer.playfield.playfield, thisPlayer.socketID);
-
-    if (thisPlayer.session.gameState === "GAME_STARTED") {
-        thisPlayer.session.players.forEach(function(user) {
-            if (user !== thisPlayer) {
-                const enemyPlayfield = {
-                    username: thisPlayer.name,
-                    playfield: thisPlayer.playfield.playfield
-                };
-                emit("enemyPlayfield", enemyPlayfield, user.socketID);
-            }
-        });
-    }
-
-    thisPlayer.currentTetromino.drawTetromino(thisPlayer.playfield.playfield);
-}
-
-export function emitTetromino(thisPlayer) {
-    emit("tetromino", thisPlayer.currentTetromino, thisPlayer.socketID);
-}
-
-export function emitSessionState(user) {
-    emit("gameState", user.session.gameState, user.socketID);
-}
-
-export function emitPlayerState(user) {
-    emit("gameOver", user.gameOver, user.socketID);
-}
-
-export function emitNext(user) {
-    emit("nextTetromino", user.nextTetromino, user.socketID);
-}
-
-function emitInitialEnemyPlayfield(user) {
-    const enemyPlayfield = user.session.players.map(player => {
-        if (player.name !== user.name)
-            return {
-                username: player.name,
-                playfield: player.playfield.playfield
-            };
-    });
-
-    if (enemyPlayfield)
-        emit("initialEnemyPlayfield", enemyPlayfield, user.socketID);
-}
+const sessions = Array();
 
 export function initialPackage(thisPlayer) {
     emitPlayfield(thisPlayer);
@@ -77,9 +45,8 @@ export function initialPackage(thisPlayer) {
     emitHostStatus(thisPlayer);
     emitSessionState(thisPlayer);
     emitLevel(thisPlayer);
-    emit('classicMode', thisPlayer.session.classicMode, thisPlayer.socketID);
-    if (thisPlayer.session.gameState === "GAME_STARTED")
-        emitNext(thisPlayer);
+    emit("classicMode", thisPlayer.session.classicMode, thisPlayer.socketID);
+    if (thisPlayer.session.gameState === "GAME_STARTED") emitNext(thisPlayer);
 }
 
 class Game {
@@ -106,27 +73,11 @@ class Game {
     }
 }
 
-export function emitGameMode(session) {
-    session.players.foreach(player => {
-        emit('classicMode', session.classicMode, player.socketID);
-    });
-}
-
 export function toggleGameMode(clientData) {
     const session = findGameSession(clientData.room);
     session.classicMode = !session.classicMode;
     emitGameMode(session);
 }
-
-const tetrominos = [
-    new Piece(Line[0], "#40AEB3", [5, -2], Line),
-    new Piece(L[0], "#68DF4E", [5, -2], L),
-    new Piece(ReverseL[0], "#5369C2", [5, -2], ReverseL),
-    new Piece(Square[0], "#F2B0EF", [5, -2], Square),
-    new Piece(S[0], "#FAFE59", [5, -2], S),
-    new Piece(Z[0], "#FFA65A", [5, -2], Z),
-    new Piece(T[0], "#9949BF", [5, -2], T)
-];
 
 function createTetromino() {
     const index = Math.floor(Math.random() * tetrominos.length);
@@ -134,13 +85,11 @@ function createTetromino() {
     return tetrominos[index];
 }
 
-const sessions = Array();
-
 function findGameSession(room) {
     return sessions.find(element => element.room === room);
 }
 
-function findUserInSession(room, username) {
+export function findUserInSession(room, username) {
     const session = findGameSession(room);
     if (!session) return;
 
@@ -177,32 +126,6 @@ function createGameSession(room, host) {
     return session;
 }
 
-export function setGameInterval(clientData, gameInterval) {
-    const player = findUserInSession(clientData.room, clientData.username);
-    player.interval = gameInterval;
-}
-
-export function fallInstantly(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
-    player.interval = 0;
-    player.instantFall = true;
-}
-
-export function moveLeft(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
-    player.moveLeft();
-}
-
-export function moveRight(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
-    player.moveRight();
-}
-
-export function rotateCurrentTetromino(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
-    player.rotate();
-}
-
 export function getUser(room, username, socketID) {
     const session = findGameSession(room) || createGameSession(room, username);
 
@@ -214,21 +137,17 @@ export function getUser(room, username, socketID) {
     } else {
         console.log(`User "${username}" is already in session.`);
         user.socketID = socketID;
+        initialPackage(user);
     }
-    return user;
 }
 
 export function parseUsername(split) {
     return split[1] ? split[1].slice(0, split[1].length - 1) : undefined;
 }
 
-function emitHostStatus(user) {
-    emit("isHost", user.session.host === user.name, user.socketID);
-}
 
 function sendInitialPackageToEveryone(room) {
-    const session = findGameSession(room);
-    session.players.forEach(player => {
+    findGameSession(room).players.forEach(player => {
         initialPackage(player);
     });
 }
@@ -240,14 +159,14 @@ export function joinTetris(hash, socketID) {
 
     console.log("joinTetris() called");
     console.log(`User "${username}" tried to connect to room: "${room}"`);
-    getUser(room, username, socketID);
+    const user = getUser(room, username, socketID);
 
-    sendInitialPackageToEveryone(room);
+    if (user)
+        sendInitialPackageToEveryone(room);
 }
 
 function readyCheck(session) {
-    if (!session)
-        return;
+    if (!session) return;
     return session.players.every(user => user.ready);
 }
 
@@ -272,7 +191,7 @@ export function resetGame(session) {
     session.gameState = "GAME_FINISHED";
     session.tetrominos = Array(createTetromino(), createTetromino());
 
-    session.players.forEach((player) => {
+    session.players.forEach(player => {
         player.playfield = new Playfield(createPlayfield());
         player.currentTetromino = null;
         player.nextTetromino = null;
@@ -302,27 +221,6 @@ export function finishGame(session) {
     session.gameState = "GAME_FINISHED";
 }
 
-function emitReadyStates(session) {
-    const playerStates = Array();
-    session.players.forEach(function(user) {
-        const readyState = {
-            username: user.name,
-            ready: user.ready,
-            host: user.host
-        };
-        playerStates.push(readyState);
-    });
-    console.log(playerStates);
-    session.players.forEach(function(user) {
-        emit("readyState", playerStates, user.socketID);
-        emitPlayfield(user);
-    });
-}
-
-export function emitLevel(thisPlayer) {
-    emit("level", thisPlayer.level, thisPlayer.socketID);
-}
-
 export function updatePlayer(thisPlayer) {
     emitPlayfield(thisPlayer);
     emitTetromino(thisPlayer);
@@ -333,7 +231,7 @@ export function updatePlayer(thisPlayer) {
 }
 
 export function updateAllPlayers(session) {
-    session.players.forEach((player) => {
+    session.players.forEach(player => {
         initialPackage(player);
     });
 }
@@ -344,10 +242,12 @@ export function checkGameOver(session) {
 
 export function toggleReady(clientData) {
     const user = findUserInSession(clientData.room, clientData.username);
-    if (!user)
-        return;
+
+    if (!user) return;
+
     user.ready = !user.ready;
     console.log(user.ready);
+
     const session = findGameSession(clientData.room);
     emitReadyStates(session);
 }

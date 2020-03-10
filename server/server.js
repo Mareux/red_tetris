@@ -1,14 +1,10 @@
 import {
     joinTetris,
-    moveLeft,
-    moveRight,
-    rotateCurrentTetromino,
-    setGameInterval,
     startGame,
     toggleReady,
-    fallInstantly,
     toggleGameMode
 } from "./tetris";
+import { fallInstantly, moveLeft, moveRight, rotateCurrentTetromino, setGameInterval } from "./gameControls";
 
 const express = require("express");
 const app = express();
