@@ -1,6 +1,7 @@
 import {useEffect} from 'react'
 import {useDispatch} from "react-redux";
 import {
+    CLASSIC_MODE, classicMode,
     CURRENT_TETROMINO,
     currentFigure, ENEMY_PLAYFIELD, enemyPlayfield, INITIAL_ENEMY_PLAYFIELD, initialEnemyPlayfield,
     NEXT_TETROMINO,
@@ -23,6 +24,7 @@ function useSocketDispatcher(socket) {
         socket.on(READY_STATE, readyState(dispatch));
         socket.on(ENEMY_PLAYFIELD, enemyPlayfield(dispatch));
         socket.on(INITIAL_ENEMY_PLAYFIELD, initialEnemyPlayfield(dispatch));
+        socket.on(CLASSIC_MODE, classicMode(dispatch));
     }, [socket]);
 }
 

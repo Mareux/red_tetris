@@ -1,4 +1,5 @@
 import {
+    CLASSIC_MODE,
     CURRENT_TETROMINO, ENEMY_PLAYFIELD,
     gameState, GET_CLIENT_DATA, INITIAL_ENEMY_PLAYFIELD,
     NEXT_TETROMINO, READY_STATE,
@@ -39,6 +40,7 @@ const INITIAL_STATE = {
     enemyPlayfield: [],
     host: true,
     gameState: null,
+    classicMode: false,
     playfield: [...new Array(20)].map(() => {
         return [...new Array(10)].map(() => "#111329");
     }),
@@ -126,6 +128,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 players: action.players
+            };
+        case CLASSIC_MODE:
+            return {
+              ...state,
+              classicMode: action.classicMode
             };
         default:
             return state;

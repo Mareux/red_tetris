@@ -29,5 +29,3 @@ export const copyTetromino = tetromino => {
 export function parseUsername(split) {
     return split[1] ? split[1].slice(0, split[1].length - 1) : undefined;
 }
-
-

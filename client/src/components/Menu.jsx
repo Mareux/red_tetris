@@ -10,12 +10,15 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const Menu = props => {
     const state = useSelector(store => store.gameState);
     const clientData = useSelector(store => store.clientData);
     const host = useSelector(store => store.host);
     const players = useSelector(store => store.players);
+    const classicMode = useSelector(store => store.classicMode);
 
     const dispatch = useDispatch();
 
@@ -118,6 +121,16 @@ const Menu = props => {
                 <DialogContent>
                     <ListOfPlayers />
                 </DialogContent>
+                <FormControlLabel
+                    disabled={!host}
+                    label="Classic Mode"
+                    control={<Switch />}
+                    checked={classicMode}
+                    style={{ marginLeft: "20px" }}
+                    onClick={() => {
+                        props.socket.emit("toggleGameMode", clientData);
+                    }}
+                />
                 {menuButtons()}
             </Dialog>
         )
