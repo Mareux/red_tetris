@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { gameState } from "../actions/game";
+import { useDispatch, useSelector } from "react-redux";
+import { gameState, getClientData } from "../actions/game";
 import React, { useEffect, useState } from "react";
 import "./Menu.css";
 import Button from "@material-ui/core/Button";
@@ -17,7 +17,9 @@ const Menu = props => {
     const host = useSelector(store => store.host);
     const players = useSelector(store => store.players);
 
-    const [open, setOpen] = useState(true);
+    const dispatch = useDispatch();
+
+    const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
         setOpen(true);
@@ -35,8 +37,18 @@ const Menu = props => {
         props.socket.emit("readyCheck", clientData);
     };
 
+    const handleLeave = () => {
+        props.socket.emit("leaveGame", clientData);
+        location.hash = "";
+        getClientData(dispatch)(null);
+    };
+
     useEffect(() => {
-        if (gameState.GAME_FINISHED === state) handleOpen();
+        if (
+            gameState.GAME_FINISHED === state ||
+            state === gameState.STARTING_SCREEN
+        )
+            handleOpen();
     }, [state]);
 
     useEffect(() => {
@@ -51,20 +63,28 @@ const Menu = props => {
         return (
             <DialogActions>
                 {!host ? (
-                    <Button color="secondary" onClick={handleReady}>
-                        {user && !user.ready ? "READY" : "UNREADY"}
-                    </Button>
+                    <>
+                        <Button color="secondary" onClick={handleReady}>
+                            {user && !user.ready ? "READY" : "UNREADY"}
+                        </Button>
+                        <Button color="secondary" onClick={handleLeave}>
+                            {"LEAVE"}
+                        </Button>
+                    </>
                 ) : (
                     <>
                         <Button color="primary" onClick={handleStart}>
                             {state === gameState.STARTING_SCREEN
                                 ? "START"
                                 : state === gameState.GAME_FINISHED
-                                    ? "RESTART"
-                                    : "RETURN"}
+                                ? "RESTART"
+                                : "RETURN"}
                         </Button>
                         <Button color="secondary" onClick={handleReady}>
                             {user && !user.ready ? "READY" : "UNREADY"}
+                        </Button>
+                        <Button color="secondary" onClick={handleLeave}>
+                            {"LEAVE"}
                         </Button>
                     </>
                 )}
@@ -73,24 +93,34 @@ const Menu = props => {
     };
 
     return (
-        players && <Dialog maxWidth="xs" fullWidth open={open} disableBackdropClick={true} onClose={handleClose}>
-            <Toolbar style={{ paddingLeft: 0 }}>
-                <DialogTitle>
-                    {gameState.STARTING_SCREEN === state
-                        ? "Starting screen"
-                        : gameState.GAME_FINISHED === state
+        players && (
+            <Dialog
+                maxWidth="xs"
+                fullWidth
+                open={open}
+                disableBackdropClick={true}
+                onClose={handleClose}
+            >
+                <Toolbar style={{ paddingLeft: 0 }}>
+                    <DialogTitle>
+                        {gameState.STARTING_SCREEN === state
+                            ? "Starting screen"
+                            : gameState.GAME_FINISHED === state
                             ? "Game over!"
                             : "Pause"}
-                </DialogTitle>
-                <div style={{ flexGrow: 1 }}/>
-                <Typography variant="body2">Room: {clientData.room}</Typography>
-            </Toolbar>
+                    </DialogTitle>
+                    <div style={{ flexGrow: 1 }} />
+                    <Typography variant="body2">
+                        Room: {clientData.room}
+                    </Typography>
+                </Toolbar>
 
-            <DialogContent>
-                <ListOfPlayers/>
-            </DialogContent>
-            {menuButtons()}
-        </Dialog>
+                <DialogContent>
+                    <ListOfPlayers />
+                </DialogContent>
+                {menuButtons()}
+            </Dialog>
+        )
     );
 };
 

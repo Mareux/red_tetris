@@ -1,9 +1,9 @@
 import {
-    joinTetris,
+    joinSession,
     startGame,
     toggleReady,
-    toggleGameMode
-} from "./tetris";
+    toggleGameMode, leaveSession
+} from "./game";
 import { fallInstantly, moveLeft, moveRight, rotateCurrentTetromino, setGameInterval } from "./gameControls";
 
 const express = require("express");
@@ -29,7 +29,7 @@ export let interval = 300;
 io.on("connection", client => {
     console.log("\nConnection happened.");
     client.on("Hash", function(string) {
-        joinTetris(string, client.id);
+        joinSession(string, client.id);
     });
     client.on("ArrowUp", clientData => {
         rotateCurrentTetromino(clientData);
@@ -51,6 +51,9 @@ io.on("connection", client => {
     });
     client.on("readyCheck", clientData => {
         toggleReady(clientData);
+    });
+    client.on("leaveGame", clientData => {
+        leaveSession(clientData);
     });
     client.on("Space", clientData => {
         fallInstantly(clientData);

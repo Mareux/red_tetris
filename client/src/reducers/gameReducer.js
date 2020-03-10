@@ -38,7 +38,7 @@ const INITIAL_STATE = {
     }],
     enemyPlayfield: [],
     host: true,
-    gameState: gameState.STARTING_SCREEN,
+    gameState: null,
     playfield: [...new Array(20)].map(() => {
         return [...new Array(10)].map(() => "#111329");
     }),

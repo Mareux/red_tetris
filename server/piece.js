@@ -1,4 +1,4 @@
-import { defaultColor } from "./tetris";
+import { defaultColor } from "./game";
 
 const autoBind = require("auto-bind");
 

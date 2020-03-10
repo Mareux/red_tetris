@@ -6,13 +6,15 @@ export function emitPlayfield(thisPlayer) {
 
     if (thisPlayer.session.gameState === "GAME_STARTED") {
         thisPlayer.session.players.forEach(function(user) {
-            if (user !== thisPlayer) {
-                const enemyPlayfield = {
-                    username: thisPlayer.name,
-                    playfield: thisPlayer.playfield.playfield
-                };
-                emit("enemyPlayfield", enemyPlayfield, user.socketID);
-            }
+            if (user !== thisPlayer)
+                emit(
+                    "enemyPlayfield",
+                    {
+                        username: thisPlayer.name,
+                        playfield: thisPlayer.playfield.playfield
+                    },
+                    user.socketID
+                );
         });
     }
 
@@ -57,7 +59,7 @@ export function emitGameMode(session) {
 }
 
 export function emitHostStatus(user) {
-    emit("isHost", user.session.host === user.name, user.socketID);
+    emit("isHost", user.host, user.socketID);
 }
 
 export function emitReadyStates(session) {

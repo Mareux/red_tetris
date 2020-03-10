@@ -1,16 +1,14 @@
 import { emit } from "./server";
 import {
-    copyTetromino,
     createPlayfield,
     disabledColor,
-    finishGame,
     updateAllPlayers,
-    checkGameOver,
     updatePlayer,
     levelUpRequirement,
-} from "./tetris";
+} from "./game";
 import Playfield from "./playfield";
 import { emitLevel, emitNext, emitPlayerState, emitPlayfield, emitTetromino } from "./gameEmits";
+import { copyTetromino } from "./utils";
 const autoBind = require("auto-bind");
 
 export default class Player {
@@ -44,8 +42,8 @@ export default class Player {
                 this.currentTetromino.drawTetromino(this.playfield.playfield);
                 if (this.currentTetromino.position[1] < 0) {
                     this.gameOver = true;
-                    if (checkGameOver(this.session)) {
-                        finishGame(this.session);
+                    if (this.session.gameOverCheck()) {
+                        this.session.finishGame();
                         updateAllPlayers(this.session);
                         emitPlayerState(this);
                         console.log("meow");

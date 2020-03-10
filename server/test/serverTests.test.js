@@ -2,8 +2,8 @@ import Player from "../player";
 import {
     levelUpRequirement,
     createGameSession,
-    getUser, joinTetris
-} from "../tetris";
+    getUser, joinSession
+} from "../game";
 
 
 describe('Connecting to a game session', () => {

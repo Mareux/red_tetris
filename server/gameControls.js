@@ -1,7 +1,8 @@
-import { findUserInSession } from "./tetris";
+import { findGameSession } from "./game";
 
 export function setGameInterval(clientData, gameInterval) {
-    const player = findUserInSession(clientData.room, clientData.username);
+    const session = findGameSession(clientData.room);
+    const player = session.findUser(clientData.username);
 
     if (!player) return;
 
@@ -9,7 +10,8 @@ export function setGameInterval(clientData, gameInterval) {
 }
 
 export function fallInstantly(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
+    const session = findGameSession(clientData.room);
+    const player = session.findUser(clientData.username);
 
     if (!player) return;
 
@@ -18,7 +20,8 @@ export function fallInstantly(clientData) {
 }
 
 export function moveLeft(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
+    const session = findGameSession(clientData.room);
+    const player = session.findUser(clientData.username);
 
     if (!player) return;
 
@@ -26,7 +29,8 @@ export function moveLeft(clientData) {
 }
 
 export function moveRight(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
+    const session = findGameSession(clientData.room);
+    const player = session.findUser(clientData.username);
 
     if (!player) return;
 
@@ -34,7 +38,8 @@ export function moveRight(clientData) {
 }
 
 export function rotateCurrentTetromino(clientData) {
-    const player = findUserInSession(clientData.room, clientData.username);
+    const session = findGameSession(clientData.room);
+    const player = session.findUser(clientData.username);
 
     if (!player) return;
 

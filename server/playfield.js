@@ -1,5 +1,5 @@
 import autoBind from "auto-bind";
-import { defaultColor, disabledColor } from "./tetris";
+import { defaultColor, disabledColor } from "./game";
 
 export default class Playfield {
     constructor(playfield) {
