@@ -57,8 +57,7 @@ export function getUser(room, username, socketID) {
 export function leaveSession(clientData) {
     const session = findGameSession(clientData.room);
 
-    if (!session)
-        return ;
+    if (!session) return;
 
     const user = session.findUser(clientData.username);
 
@@ -80,8 +79,7 @@ export function leaveSession(clientData) {
 export function startGame(clientData) {
     const session = findGameSession(clientData.room);
 
-    if (!session)
-        return;
+    if (!session) return;
 
     if (session.readyCheck() !== false && session.gameState !== "GAME_STARTED")
         session.startGame();
@@ -95,6 +93,8 @@ export function toggleGameMode(clientData) {
 
 export function toggleReady(clientData) {
     const session = findGameSession(clientData.room);
+    if (!session) return;
+
     const user = session.findUser(clientData.username);
 
     if (!user) return;

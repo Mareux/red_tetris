@@ -3,8 +3,15 @@ import EnemyPlayfield from "../components/EnemyPlayfield";
 
 const RightSide = () => {
     return (
-        <div>
-            <EnemyPlayfield/>
+        <div
+            style={{
+                maxHeight: "900px",
+                display: "flex",
+                flexDirection: "column",
+                flexWrap: "wrap"
+            }}
+        >
+            <EnemyPlayfield />
         </div>
     );
 };

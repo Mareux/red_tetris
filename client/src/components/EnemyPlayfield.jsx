@@ -7,33 +7,36 @@ const EnemyPlayfield = () => {
     const players = useSelector(store => store.enemyPlayfield);
 
     return (
-        players && players.map(player => {
-            return <>
-                <p style={{ margin: "10 px 0 10px 10px" }}>
-                    {player && player.playfield ? player.username : ""}
-                </p>
-                <div className={"enemyPlayfield"}>
-                    {player && player.playfield &&
-                    player.playfield.map((row, i) => (
-                        <div key={i} className="row">
-                            {row.map((column, i) => (
-                                <div
-                                    key={i}
-                                    className={"column"}
-                                    style={{
-                                        backgroundColor:
-                                            column === "#111329"
-                                                ? "#111329"
-                                                : "#FF7272"
-                                    }}
-                                />
+        players &&
+        players.map(player => {
+            return (
+                <>
+                    <div className={"enemyPlayfield"}>
+                        <p style={{ margin: "10 px 0 10px 10px" }}>
+                            {player && player.playfield ? player.username : ""}
+                        </p>
+                        {player &&
+                            player.playfield &&
+                            player.playfield.map((row, i) => (
+                                <div key={i} className="row">
+                                    {row.map((column, i) => (
+                                        <div
+                                            key={i}
+                                            className={"column"}
+                                            style={{
+                                                backgroundColor:
+                                                    column === "#111329"
+                                                        ? "#111329"
+                                                        : "#FF7272"
+                                            }}
+                                        />
+                                    ))}
+                                </div>
                             ))}
-                        </div>
-                    ))}
-                </div>
-            </>;
+                    </div>
+                </>
+            );
         })
-
     );
 };
 
