@@ -2,7 +2,7 @@ import {
     CLASSIC_MODE,
     CURRENT_TETROMINO, ENEMY_PLAYFIELD,
     gameState, GET_CLIENT_DATA, INITIAL_ENEMY_PLAYFIELD,
-    NEXT_TETROMINO, READY_STATE,
+    NEXT_TETROMINO, PLAYER_STATE, READY_STATE,
     SET_CLEARED_LINES,
     SET_GAME_STATE, SET_HOST, SET_LEVEL,
     SET_PLAYFIELD,
@@ -31,7 +31,6 @@ function getClientData(hash) {
 
 const INITIAL_STATE = {
     clientData: getClientData(location.hash),
-    menuState: false,
     players: [{
         username: getClientData(location.hash).username,
         host: false,
@@ -40,6 +39,7 @@ const INITIAL_STATE = {
     enemyPlayfield: [],
     host: true,
     gameState: null,
+    gameOver: false,
     classicMode: false,
     playfield: [...new Array(20)].map(() => {
         return [...new Array(10)].map(() => "#111329");
@@ -93,6 +93,11 @@ function gameReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 gameState: action.gameState
+            };
+        case PLAYER_STATE:
+            return {
+              ...state,
+              gameOver: action.gameOver
             };
         case NEXT_TETROMINO:
             return {

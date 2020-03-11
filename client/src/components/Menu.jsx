@@ -19,6 +19,7 @@ const Menu = props => {
     const host = useSelector(store => store.host);
     const players = useSelector(store => store.players);
     const classicMode = useSelector(store => store.classicMode);
+    const gameOver = useSelector(store => store.gameOver);
 
     const dispatch = useDispatch();
 
@@ -49,10 +50,11 @@ const Menu = props => {
     useEffect(() => {
         if (
             gameState.GAME_FINISHED === state ||
-            state === gameState.STARTING_SCREEN
+            state === gameState.STARTING_SCREEN ||
+            gameOver
         )
             handleOpen();
-    }, [state]);
+    }, [state, gameOver]);
 
     useEffect(() => {
         if (state === gameState.GAME_STARTED) handleClose();
@@ -67,7 +69,13 @@ const Menu = props => {
             <DialogActions>
                 {!host ? (
                     <>
-                        <Button color="secondary" onClick={handleReady}>
+                        <Button
+                            color="secondary"
+                            disabled={
+                                state !== gameState.GAME_FINISHED && gameOver
+                            }
+                            onClick={handleReady}
+                        >
                             {user && !user.ready ? "READY" : "UNREADY"}
                         </Button>
                         <Button color="secondary" onClick={handleLeave}>
@@ -76,14 +84,26 @@ const Menu = props => {
                     </>
                 ) : (
                     <>
-                        <Button color="primary" onClick={handleStart}>
+                        <Button
+                            color="primary"
+                            disabled={
+                                state !== gameState.GAME_FINISHED && gameOver
+                            }
+                            onClick={handleStart}
+                        >
                             {state === gameState.STARTING_SCREEN
                                 ? "START"
                                 : state === gameState.GAME_FINISHED
                                 ? "RESTART"
                                 : "RETURN"}
                         </Button>
-                        <Button color="secondary" onClick={handleReady}>
+                        <Button
+                            color="secondary"
+                            disabled={
+                                state !== gameState.GAME_FINISHED && gameOver
+                            }
+                            onClick={handleReady}
+                        >
                             {user && !user.ready ? "READY" : "UNREADY"}
                         </Button>
                         <Button color="secondary" onClick={handleLeave}>

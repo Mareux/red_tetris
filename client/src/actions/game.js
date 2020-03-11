@@ -10,6 +10,7 @@ export const ENEMY_PLAYFIELD = "enemyPlayfield";
 export const GET_CLIENT_DATA = "GET_CLIENT_DATA";
 export const INITIAL_ENEMY_PLAYFIELD = "initialEnemyPlayfield";
 export const CLASSIC_MODE = "classicMode";
+export const PLAYER_STATE = "gameOver";
 
 export const SET_PLAYFIELD = "playfield";
 
@@ -99,6 +100,15 @@ export function setClearedLines(dispatch) {
             clearedLines
         });
     };
+}
+
+export function setPlayerState(dispatch) {
+    return gameOver => {
+        dispatch({
+            type: PLAYER_STATE,
+            gameOver
+        })
+    }
 }
 
 export function setGameState(dispatch) {
